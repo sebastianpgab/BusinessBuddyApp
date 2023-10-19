@@ -7,6 +7,7 @@
         public string Gender { get; set; }
         public string Brand { get; set; }
         public string Style { get; set; }
-
+        public int ProductId { get; set; } // Klucz obcy
+        public virtual Product Product { get; set; } // Navigational property
     }
 }

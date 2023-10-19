@@ -12,6 +12,7 @@ namespace BusinessBuddyApp.Entities
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<Mug> Mugs { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderProduct> OrderProducts { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Other> Others { get; set; }
         public DbSet<Product> Products { get; set; }
@@ -22,6 +23,14 @@ namespace BusinessBuddyApp.Entities
         {
             modelBuilder.Entity<Client>().HasOne(u => u.Address).WithOne(p => p.Client).HasForeignKey<Address>(a => a.ClientId);
             modelBuilder.Entity<Order>().HasOne(u => u.Client).WithMany(p => p.Orders).HasForeignKey(a => a.ClientId);
+            modelBuilder.Entity<Order>().HasOne(u => u.Invoice).WithOne(p => p.Order).HasForeignKey<Order>(a => a.InvoiceId);
+            modelBuilder.Entity<OrderDetail>().HasOne(u => u.Order).WithMany(p => p.OrderDetails).HasForeignKey(a => a.OrderId);
+            modelBuilder.Entity<OrderDetail>().HasMany(u => u.OrderProducts).WithOne(p => p.OrderDetail).HasForeignKey(a => a.OrderDetailId);
+            modelBuilder.Entity<Role>().HasOne(u => u.User).WithOne(p => p.Role).HasForeignKey<User>(a => a.RoleId);
+            modelBuilder.Entity<Mug>().HasOne(m => m.Product).WithOne(p => p.Mug).HasForeignKey<Mug>(m => m.ProductId);
+            modelBuilder.Entity<Clothe>().HasOne(m => m.Product).WithOne(p => p.Clothe).HasForeignKey<Clothe>(m => m.ProductId);
+            modelBuilder.Entity<Other>().HasOne(m => m.Product).WithOne(p => p.Other).HasForeignKey<Other>(m => m.ProductId);
+
 
         }
     }
