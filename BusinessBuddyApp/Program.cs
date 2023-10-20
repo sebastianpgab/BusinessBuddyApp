@@ -1,4 +1,5 @@
 using BusinessBuddyApp.Entities;
+using BusinessBuddyApp.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +18,7 @@ namespace BusinessBuddyApp
 
             // Dodawanie us³ug
             builder.Services.AddControllers();
+            builder.Services.AddScoped<IClientService, ClientService>();
             builder.Services.AddDbContext<BusinessBudyDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("BusinessBudyDbConnection")));
 
