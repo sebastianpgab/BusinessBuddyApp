@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BusinessBuddyApp.Controllers
 {
+    [Route("api/client")]
     [ApiController]
-    [Route("api/[controller]")]
-    public class ClientController : ControllerBase
+    public class ClientController : Controller
     {
         public IClientService _clientService;
         public ClientController(IClientService clientService)
@@ -17,7 +17,15 @@ namespace BusinessBuddyApp.Controllers
         [HttpGet]
         public ActionResult<ICollection<Client>> GetAll()
         {
-            return Ok(_clientService.GetAll());
+            var clients = _clientService.GetAll();
+            return Ok(clients);
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<Client> Get([FromRoute] int id)
+        {
+            var client = _clientService.Get(id);
+            return Ok(client);
         }
 
     }
