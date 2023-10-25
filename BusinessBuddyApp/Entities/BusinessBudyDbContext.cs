@@ -31,7 +31,6 @@ namespace BusinessBuddyApp.Entities
             modelBuilder.Entity<Clothe>().HasOne(m => m.Product).WithOne(p => p.Clothe).HasForeignKey<Clothe>(m => m.ProductId);
             modelBuilder.Entity<Other>().HasOne(m => m.Product).WithOne(p => p.Other).HasForeignKey<Other>(m => m.ProductId);
 
-
         }
     }
 

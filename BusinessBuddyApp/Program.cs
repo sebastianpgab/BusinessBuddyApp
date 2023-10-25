@@ -17,7 +17,7 @@ namespace BusinessBuddyApp
             var configuration = builder.Configuration;
 
             // Dodawanie us³ug
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
             builder.Services.AddScoped<IClientService, ClientService>();
             builder.Services.AddDbContext<BusinessBudyDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("BusinessBudyDbConnection")));

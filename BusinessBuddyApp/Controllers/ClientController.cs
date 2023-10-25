@@ -28,5 +28,12 @@ namespace BusinessBuddyApp.Controllers
             return Ok(client);
         }
 
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Client>> Update([FromBody] Client client, [FromRoute] int id)
+        {
+            var updatedClient = await _clientService.Update(client, id);
+            return Ok(updatedClient);
+        }
+
     }
 }

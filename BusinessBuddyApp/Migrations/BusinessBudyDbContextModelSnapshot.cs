@@ -479,8 +479,7 @@ namespace BusinessBuddyApp.Migrations
 
             modelBuilder.Entity("BusinessBuddyApp.Entities.Client", b =>
                 {
-                    b.Navigation("Address")
-                        .IsRequired();
+                    b.Navigation("Address");
 
                     b.Navigation("Orders");
                 });
