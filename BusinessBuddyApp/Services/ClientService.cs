@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using BusinessBuddyApp.Migrations;
 using BusinessBuddyApp.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Server.IIS.Core;
 
 namespace BusinessBuddyApp.Services
 {
@@ -11,6 +12,7 @@ namespace BusinessBuddyApp.Services
         public ICollection<Client> GetAll();
         public Client Get(int id);
         public Task<Client> Update(Client client, int id);
+        public bool Create(Client client);
 
     }
     public class ClientService : IClientService
@@ -56,7 +58,17 @@ namespace BusinessBuddyApp.Services
                 return clientToUpdate;
             }
             throw new ArgumentNullException($"Client {id} not found");
-     
+        }
+
+        public bool Create(Client client)
+        {
+            if(client is not null)
+            {
+                _dbContext.Add(client);
+                _dbContext.SaveChanges();
+                return true;
+            }
+            throw new ArgumentNullException("Client is null");
         }
     }
 }

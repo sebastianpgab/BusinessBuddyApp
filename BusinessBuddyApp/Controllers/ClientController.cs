@@ -6,7 +6,7 @@ namespace BusinessBuddyApp.Controllers
 {
     [Route("api/client")]
     [ApiController]
-    public class ClientController : Controller
+    public class ClientController : ControllerBase
     {
         public IClientService _clientService;
         public ClientController(IClientService clientService)
@@ -33,6 +33,13 @@ namespace BusinessBuddyApp.Controllers
         {
             var updatedClient = await _clientService.Update(client, id);
             return Ok(updatedClient);
+        }
+
+        [HttpPost]
+        public ActionResult<bool> Create([FromBody] Client client)
+        {
+            var result = _clientService.Create(client);
+            return Ok(result);
         }
 
     }
