@@ -27,10 +27,6 @@ namespace BusinessBuddyApp.Entities
             modelBuilder.Entity<OrderDetail>().HasOne(u => u.Order).WithMany(p => p.OrderDetails).HasForeignKey(a => a.OrderId);
             modelBuilder.Entity<OrderDetail>().HasMany(u => u.OrderProducts).WithOne(p => p.OrderDetail).HasForeignKey(a => a.OrderDetailId);
             modelBuilder.Entity<Role>().HasOne(u => u.User).WithOne(p => p.Role).HasForeignKey<User>(a => a.RoleId);
-            modelBuilder.Entity<Mug>().HasOne(m => m.Product).WithOne(p => p.Mug).HasForeignKey<Mug>(m => m.ProductId);
-            modelBuilder.Entity<Clothe>().HasOne(m => m.Product).WithOne(p => p.Clothe).HasForeignKey<Clothe>(m => m.ProductId);
-            modelBuilder.Entity<Other>().HasOne(m => m.Product).WithOne(p => p.Other).HasForeignKey<Other>(m => m.ProductId);
-
         }
     }
 
