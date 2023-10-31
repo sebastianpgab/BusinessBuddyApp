@@ -12,12 +12,22 @@ namespace BusinessBuddyApp.Controllers
         {
             _productService = productService;
         }
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetAll()
         {
-           var result = await _productService.GetAll();
-            return Ok(result);
+           var products = await _productService.GetAll();
+            return Ok(products);
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Product>> Get([FromRoute]int id) 
+        {
+            var product = await _productService.Get(id);
+            return Ok(product);
+        }
+
+
 
     }
 }
