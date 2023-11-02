@@ -7,13 +7,18 @@ namespace BusinessBuddyApp.Services
     {
         public Task<IEnumerable<Product>> GetAll();
         public Task<Product> Get(int id);
+        public Task<Product> Update(Product updatedProduct, int id);
+        public bool Create(Product product, string productType);
+
     }
-    public class ProductService : IProductService
+    public class ProductService : IProductService, IMugService
     {
         private readonly BusinessBudyDbContext _dbContext;
-        public ProductService(BusinessBudyDbContext dbContext)
+        private readonly IMugService _mugService;
+        public ProductService(BusinessBudyDbContext dbContext, IMugService mugService)
         { 
             _dbContext = dbContext;
+            _mugService = mugService;
         }
 
         public async Task<IEnumerable<Product>> GetAll()
@@ -28,63 +33,91 @@ namespace BusinessBuddyApp.Services
 
         public async Task<Product> Get(int id)
         {
-            var product = await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
-            if(product is not null)
+            var product = await _dbContext.Products
+                .Include(p => p.Clothe)
+                .Include(p => p.Mug)
+                .Include(p => p.Other)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (product is not null)
             {
                 return product;
             }
             throw new ArgumentNullException("Product not found");
+
         }
 
+        //Think about the strategy pattern
         public async Task<Product> Update(Product updatedProduct, int id)
-        {       
-            switch (updatedProduct.ProductType)
+        {
+            var product = await _dbContext.Products
+                .Include(p => p.Mug)
+                .Include(p => p.Clothe)
+                .Include(p => p.Other)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (product == null) throw new Exception($"Product with ID {id} not found.");
+
+            product.ProductType = updatedProduct.ProductType ?? product.ProductType;
+            product.Price = updatedProduct.Price ?? product.Price;
+            product.Quantity = updatedProduct.Quantity ?? product.Quantity;
+            product.StockQuantity = updatedProduct.StockQuantity ?? product.StockQuantity;
+
+            switch (product.ProductType)
             {
                 case "Mug":
-
-                    var mugProduct = await _dbContext.Mugs.FirstOrDefaultAsync(p => p.Id == id);
-
-                    if(mugProduct is not null)
+                    if (product.Mug is not null)
                     {
-                        if (updatedProduct.Mug.Material is not null) { mugProduct.Material = updatedProduct.Mug.Material; }
-                        if (updatedProduct.Mug.Capacity is not null) { mugProduct.Capacity = updatedProduct.Mug.Capacity; }
-                        if (updatedProduct.Mug.IsMicrowaveSafe is not null) { mugProduct.IsMicrowaveSafe = updatedProduct.Mug.IsMicrowaveSafe;}
-                        if (updatedProduct.Mug.IsDishwasherSafe is not null) { mugProduct.IsDishwasherSafe = updatedProduct.Mug.IsDishwasherSafe;}
+                        product.Mug.Material = updatedProduct.Mug.Material ?? product.Mug.Material;
+                        product.Mug.Capacity = updatedProduct.Mug.Capacity ?? product.Mug.Capacity;
+                        product.Mug.IsMicrowaveSafe = updatedProduct.Mug.IsMicrowaveSafe ?? product.Mug.IsMicrowaveSafe;
+                        product.Mug.IsDishwasherSafe = updatedProduct.Mug.IsDishwasherSafe ?? product.Mug.IsDishwasherSafe;
                     }
                     break;
 
                 case "Clothe":
-
-                    var clotheProduct = await _dbContext.Clothes.FirstOrDefaultAsync(p => p.Id == id);
-
-                    if (clotheProduct is not null)
+                    if (product.Clothe is not null)
                     {
-                        if (updatedProduct.Clothe.Size is not null) { clotheProduct.Size = updatedProduct.Clothe.Size; }
-                        if (updatedProduct.Clothe.Gender is not null) {clotheProduct.Gender = updatedProduct.Clothe.Gender; }
-                        if (updatedProduct.Clothe.Brand is not null) {clotheProduct.Brand = updatedProduct.Clothe.Brand; }
-                        if (updatedProduct.Clothe.Style is not null) { clotheProduct.Style = updatedProduct.Clothe.Style; }
+                        product.Clothe.Size = updatedProduct.Clothe.Size ?? product.Clothe.Size;
+                        product.Clothe.Gender = updatedProduct.Clothe.Gender ?? product.Clothe.Gender;
+                        product.Clothe.Brand = updatedProduct.Clothe.Brand ?? product.Clothe.Brand;
+                        product.Clothe.Style = updatedProduct.Clothe.Style ?? product.Clothe.Style;
                     }
                     break;
 
-                case "Orther":
-
-                    var otherProduct = await _dbContext.Others.FirstOrDefaultAsync(p => p.Id == id);
-
-                    if(otherProduct is not null)
+                case "Other":
+                    if (product.Other is not null)
                     {
-                        if (updatedProduct.Other.Description is not null) { otherProduct.Description = updatedProduct.Other.Description;}
+                        product.Other.Description = updatedProduct.Other.Description ?? product.Other.Description;
                     }
                     break;
 
                 default:
                     throw new Exception($"Unknown product type: {updatedProduct.ProductType}.");
-                                           
             }
 
             await _dbContext.SaveChangesAsync();
             return updatedProduct;
-            
         }
+
+        public bool Create(Product product, string productType)
+        {
+            switch (productType)
+            {
+                case "Clothe":
+                    _mugService.Create();
+                    break;
+            }
+            if(product is not null)
+            {
+                _dbContext.Add(product);
+                _dbContext.SaveChanges();
+                return true;
+            }
+            throw new ArgumentNullException("Product" + nameof(product) + "is null");
+ 
+        }
+
 
 
     }

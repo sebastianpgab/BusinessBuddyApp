@@ -27,6 +27,22 @@ namespace BusinessBuddyApp.Controllers
             return Ok(product);
         }
 
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Product>> Update([FromBody] Product product, [FromRoute] int id)
+        {
+            var updatedProduct = await _productService.Update(product, id);
+            return Ok(updatedProduct);
+        }
+
+        [HttpPost]
+        public ActionResult Create([FromBody] Product product, [FromRoute] string productType)
+        {
+            var isCreated = _productService.Create(product, productType);
+            return Ok(isCreated);
+        }
+
+
+
 
 
     }
