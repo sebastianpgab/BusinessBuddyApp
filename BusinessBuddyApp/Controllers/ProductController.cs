@@ -35,14 +35,11 @@ namespace BusinessBuddyApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create([FromBody] Product product, [FromRoute] string productType)
+        public ActionResult Create([FromBody] Product product)
         {
-            var isCreated = _productService.Create(product, productType);
+            var isCreated = _productService.Create(product);
             return Ok(isCreated);
         }
-
-
-
 
 
     }

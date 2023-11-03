@@ -8,17 +8,15 @@ namespace BusinessBuddyApp.Services
         public Task<IEnumerable<Product>> GetAll();
         public Task<Product> Get(int id);
         public Task<Product> Update(Product updatedProduct, int id);
-        public bool Create(Product product, string productType);
+        public bool Create(Product product);
 
     }
-    public class ProductService : IProductService, IMugService
+    public class ProductService : IProductService
     {
         private readonly BusinessBudyDbContext _dbContext;
-        private readonly IMugService _mugService;
-        public ProductService(BusinessBudyDbContext dbContext, IMugService mugService)
+        public ProductService(BusinessBudyDbContext dbContext)
         { 
             _dbContext = dbContext;
-            _mugService = mugService;
         }
 
         public async Task<IEnumerable<Product>> GetAll()
@@ -100,20 +98,16 @@ namespace BusinessBuddyApp.Services
             return updatedProduct;
         }
 
-        public bool Create(Product product, string productType)
+        public bool Create(Product product)
         {
-            switch (productType)
-            {
-                case "Clothe":
-                    _mugService.Create();
-                    break;
-            }
-            if(product is not null)
+
+            if (product is not null)
             {
                 _dbContext.Add(product);
                 _dbContext.SaveChanges();
                 return true;
             }
+
             throw new ArgumentNullException("Product" + nameof(product) + "is null");
  
         }
