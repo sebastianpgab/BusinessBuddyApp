@@ -5,6 +5,9 @@ namespace BusinessBuddyApp.Services
 {
     public interface IOrderService
     {
+        public Task<Order> Get(int id);
+        public bool Create(int clientId);
+        public Task<IEnumerable<Order>> GetAll();
 
     }
     public class OrderService : IOrderService
@@ -26,7 +29,18 @@ namespace BusinessBuddyApp.Services
 
             throw new ArgumentNullException("Order not found");
         }
-        public async Task<bool> Create(int clientId)
+
+        public async Task<IEnumerable<Order>> GetAll()
+        {
+            var orders = await _dbContext.Orders.ToListAsync();
+            if (orders.Any())
+            {
+                return orders;
+            }
+            throw new ArgumentNullException("Orders not found");
+        }
+
+        public bool Create(int clientId)
         {
             var order = new Order();
             {
@@ -34,7 +48,7 @@ namespace BusinessBuddyApp.Services
                 order.OrderDetails = new List<OrderDetail>();
             }
             _dbContext.Orders.Add(order);
-            await _dbContext.SaveChangesAsync();
+            _dbContext.SaveChanges();
             return true;
         }
 
