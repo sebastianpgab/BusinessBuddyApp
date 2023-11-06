@@ -4,6 +4,7 @@ using BusinessBuddyApp.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessBuddyApp.Migrations
 {
     [DbContext(typeof(BusinessBudyDbContext))]
-    partial class BusinessBudyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231106214603_Refactor_entities")]
+    partial class Refactor_entities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,10 +200,10 @@ namespace BusinessBuddyApp.Migrations
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("InvoiceId")
+                    b.Property<int>("InvoiceId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OrderDatailId")
+                    b.Property<int>("OrderDatailId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -209,8 +211,7 @@ namespace BusinessBuddyApp.Migrations
                     b.HasIndex("ClientId");
 
                     b.HasIndex("InvoiceId")
-                        .IsUnique()
-                        .HasFilter("[InvoiceId] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Orders");
                 });
@@ -412,7 +413,9 @@ namespace BusinessBuddyApp.Migrations
 
                     b.HasOne("BusinessBuddyApp.Entities.Invoice", "Invoice")
                         .WithOne("Order")
-                        .HasForeignKey("BusinessBuddyApp.Entities.Order", "InvoiceId");
+                        .HasForeignKey("BusinessBuddyApp.Entities.Order", "InvoiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Client");
 

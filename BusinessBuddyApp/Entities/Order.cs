@@ -4,11 +4,11 @@
     {
         public int Id { get; set; }
         public int ClientId { get; set; }
-        public int OrderDatailId { get; set; }
-        public int InvoiceId { get; set; }
-        public virtual Client Client {get; set;}
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; } 
-        public virtual Invoice Invoice { get; set; }
+        public int? OrderDatailId { get; set; }
+        public int? InvoiceId { get; set; }
+        public virtual Client? Client {get; set;}
+        public virtual ICollection<OrderDetail>? OrderDetails { get; set; } 
+        public virtual Invoice? Invoice { get; set; }
 
     }
 }
