@@ -13,16 +13,16 @@ namespace BusinessBuddyApp.Controllers
             _orderService = orderService;
         }
         [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> Get([FromRoute] int id)
+        public async Task<ActionResult<Order>> Get([FromRoute] int clientId, [FromRoute] int id)
         {
-            var order = await _orderService.Get(id);
+            var order = await _orderService.Get(clientId, id);
             return Ok(order);
         }
 
         [HttpGet()]
-        public async Task<ActionResult<IEnumerable<Order>>> GetAll()
+        public async Task<ActionResult<IEnumerable<Order>>> GetAll([FromRoute] int clientId)
         {
-            var orders = await _orderService.GetAll();
+            var orders = await _orderService.GetAll(clientId);
             return Ok(orders);
         }
 

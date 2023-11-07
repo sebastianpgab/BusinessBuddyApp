@@ -25,7 +25,13 @@ namespace BusinessBuddyApp.Controllers
         {
             var orderDetails = await _orderDetailService.GetAll();
             return Ok(orderDetails);
+        }
 
+        [HttpPost]
+        public ActionResult<bool> Create([FromRoute] int orderId)
+        {
+            var isCreated = _orderDetailService.Create(orderId);
+            return Ok(isCreated);
         }
     }
 }
