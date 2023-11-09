@@ -19,6 +19,5 @@ namespace BusinessBuddyApp.Entities
         public string Email { get; set; }
         public virtual Address Address { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
-
     }
 }

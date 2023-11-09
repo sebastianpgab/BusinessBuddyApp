@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BusinessBuddyApp.Controllers
 {
-    [Route("api/orderDetail/{orderId}/orderProduct")]
+    [Route("api/orderDetailId/{orderDetailId}/orderProduct")]
     public class OrderProductController : ControllerBase
     {
         private readonly IOrderProductService _orderProductService;
@@ -14,16 +14,16 @@ namespace BusinessBuddyApp.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<OrderProduct> Get([FromRoute]int id)
+        public async Task<ActionResult<OrderProduct>> Get([FromRoute]int id)
         {
-            var orderProduct = _orderProductService.Get(id);
+            var orderProduct = await _orderProductService.Get(id);
             return Ok(orderProduct);
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<OrderProduct>> GetAll([FromRoute] int orderId)
+        [HttpGet("/all")]
+        public async Task<ActionResult<IEnumerable<OrderProduct>>> GetAll([FromRoute] int orderDetailId)
         {
-            var orderProdcts = _orderProductService.GetAll(orderId);
+            var orderProdcts = await _orderProductService.GetAll(orderDetailId);
             return Ok(orderProdcts);
         }
 
@@ -42,10 +42,10 @@ namespace BusinessBuddyApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult<OrderProduct> Create([FromBody] OrderProduct product)
+        public ActionResult<bool> Create([FromBody] OrderProduct product, [FromRoute] int orderDetailId)
         {
-            var orderProduct = _orderProductService.Create(product);
-            return(orderProduct);
+            var isCreated = _orderProductService.Create(product, orderDetailId);
+            return Ok(isCreated);
         }
 
 

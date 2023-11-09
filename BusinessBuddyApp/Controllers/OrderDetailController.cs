@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BusinessBuddyApp.Controllers
 {
-    [Route("/api/client/{clientId}/order/{orderId}/orderDetail")]
+    [Route("/api/order/{orderId}/orderDetail")]
     public class OrderDetailController : ControllerBase
     {
         private readonly IOrderDetailService _orderDetailService;
@@ -17,7 +17,6 @@ namespace BusinessBuddyApp.Controllers
         {
             var orderDetail = await _orderDetailService.Get(id);
             return Ok(orderDetail);
-
         }
 
         [HttpGet]

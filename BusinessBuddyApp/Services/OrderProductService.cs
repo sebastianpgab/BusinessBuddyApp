@@ -1,5 +1,6 @@
 ﻿using BusinessBuddyApp.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace BusinessBuddyApp.Services
 {
@@ -9,7 +10,7 @@ namespace BusinessBuddyApp.Services
         public Task<IEnumerable<OrderProduct>> GetAll(int orderDetailId);
         public bool Update(OrderProduct orderProduct, int id);
         public bool Delete(int orderProductId);
-        public OrderProduct Create(OrderProduct orderProduct);
+        public bool Create(OrderProduct orderProduct, int orderDetailId);
 
     }
     public class OrderProductService : IOrderProductService
@@ -26,7 +27,7 @@ namespace BusinessBuddyApp.Services
             {
                 return orderProduct;
             }
-            throw new ArgumentNullException("Order Product not found");
+            throw new InvalidOperationException("Order Product not found");
         }
 
         public async Task<IEnumerable<OrderProduct>> GetAll(int orderDetailId)
@@ -37,7 +38,7 @@ namespace BusinessBuddyApp.Services
             {
                 return orderProducts;
             }
-            throw new ArgumentNullException("Order Products not found");
+            throw new InvalidOperationException("Order Products not found");
         }
 
         public bool Update(OrderProduct orderProduct, int id) 
@@ -52,11 +53,22 @@ namespace BusinessBuddyApp.Services
             {
                 throw new ArgumentNullException("Order product not found.");
             }
+            var product = _dbContext.Products.First(p => p.Id == existingOrderProduct.ProductId);
 
-            existingOrderProduct.TotalAmount = orderProduct.TotalAmount;
-            existingOrderProduct.Quantity = orderProduct.Quantity;
+            if (orderProduct.Quantity != existingOrderProduct.Quantity)
+            {
+                if(product.Quantity >= orderProduct.Quantity)
+                {
+                    existingOrderProduct.Quantity = orderProduct.Quantity;
+                    existingOrderProduct.TotalAmount = orderProduct.Quantity * product.Price;
+                }
+                else
+                {
+                    throw new InvalidOperationException("The ordered quantity exceeds available stock.");
+                }
+            }
+            
             existingOrderProduct.ProductId = orderProduct.ProductId;
-            existingOrderProduct.OrderDetailId = orderProduct.OrderDetailId;
 
             _dbContext.SaveChanges();
             return true;
@@ -77,17 +89,25 @@ namespace BusinessBuddyApp.Services
             return true;
         }
 
-        public OrderProduct Create(OrderProduct orderProduct)
+        //tu porawic tworzenie tzn. przy tworzeniu zeby od razu obliczało się total amount
+        public bool Create(OrderProduct orderProduct, int orderDetailId)
         {
             if (orderProduct == null)
             {
-                throw new ArgumentNullException(nameof(orderProduct));
+                throw new ArgumentNullException(nameof(orderProduct), "OrderProduct cannot be null.");
             }
-            _dbContext.OrderProducts.Add(orderProduct);
-
-            _dbContext.SaveChanges();
-
-            return orderProduct;
+            var orderDetail = _dbContext.OrderDetails.Find(orderDetailId);
+            if(orderDetail != null)
+            {
+                orderProduct.OrderDetailId = orderDetailId;
+                _dbContext.OrderProducts.Add(orderProduct);
+                _dbContext.SaveChanges();
+            }
+            else
+            {
+                throw new InvalidOperationException("OrderDetail with the given ID was not found.");
+            }
+            return true;
         }
     }
 }

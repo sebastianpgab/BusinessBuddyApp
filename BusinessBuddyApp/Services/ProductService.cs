@@ -56,10 +56,10 @@ namespace BusinessBuddyApp.Services
 
             if (product == null) throw new Exception($"Product with ID {id} not found.");
 
-            product.ProductType = updatedProduct.ProductType ?? product.ProductType;
-            product.Price = updatedProduct.Price ?? product.Price;
-            product.Quantity = updatedProduct.Quantity ?? product.Quantity;
-            product.StockQuantity = updatedProduct.StockQuantity ?? product.StockQuantity;
+            product.ProductType = updatedProduct.ProductType != product.ProductType ? updatedProduct.ProductType : product.ProductType;
+            product.Price = updatedProduct.Price != product.Price ? product.Price : updatedProduct.Price;
+            product.Quantity = updatedProduct.Quantity != product.Quantity ? updatedProduct.Quantity : product.Quantity;
+            product.StockQuantity = updatedProduct.StockQuantity != product.StockQuantity ? updatedProduct.StockQuantity : product.StockQuantity;
 
             switch (product.ProductType)
             {

@@ -4,6 +4,7 @@ using BusinessBuddyApp.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessBuddyApp.Migrations
 {
     [DbContext(typeof(BusinessBudyDbContext))]
-    partial class BusinessBudyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231109125913_Add_nullable_properties_to_Client")]
+    partial class Add_nullable_properties_to_Client
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,7 +58,7 @@ namespace BusinessBuddyApp.Migrations
                     b.HasIndex("ClientId")
                         .IsUnique();
 
-                    b.ToTable("Addresses", (string)null);
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("BusinessBuddyApp.Entities.Client", b =>
@@ -88,7 +90,7 @@ namespace BusinessBuddyApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Clients", (string)null);
+                    b.ToTable("Clients");
                 });
 
             modelBuilder.Entity("BusinessBuddyApp.Entities.Clothe", b =>
@@ -123,7 +125,7 @@ namespace BusinessBuddyApp.Migrations
                     b.HasIndex("ProductId")
                         .IsUnique();
 
-                    b.ToTable("Clothes", (string)null);
+                    b.ToTable("Clothes");
                 });
 
             modelBuilder.Entity("BusinessBuddyApp.Entities.Invoice", b =>
@@ -149,7 +151,7 @@ namespace BusinessBuddyApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Invoices", (string)null);
+                    b.ToTable("Invoices");
                 });
 
             modelBuilder.Entity("BusinessBuddyApp.Entities.Mug", b =>
@@ -181,7 +183,7 @@ namespace BusinessBuddyApp.Migrations
                     b.HasIndex("ProductId")
                         .IsUnique();
 
-                    b.ToTable("Mugs", (string)null);
+                    b.ToTable("Mugs");
                 });
 
             modelBuilder.Entity("BusinessBuddyApp.Entities.Order", b =>
@@ -209,7 +211,7 @@ namespace BusinessBuddyApp.Migrations
                         .IsUnique()
                         .HasFilter("[InvoiceId] IS NOT NULL");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("BusinessBuddyApp.Entities.OrderDetail", b =>
@@ -230,7 +232,7 @@ namespace BusinessBuddyApp.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderDetails", (string)null);
+                    b.ToTable("OrderDetails");
                 });
 
             modelBuilder.Entity("BusinessBuddyApp.Entities.OrderProduct", b =>
@@ -259,7 +261,7 @@ namespace BusinessBuddyApp.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderProducts", (string)null);
+                    b.ToTable("OrderProducts");
                 });
 
             modelBuilder.Entity("BusinessBuddyApp.Entities.Other", b =>
@@ -282,7 +284,7 @@ namespace BusinessBuddyApp.Migrations
                     b.HasIndex("ProductId")
                         .IsUnique();
 
-                    b.ToTable("Others", (string)null);
+                    b.ToTable("Others");
                 });
 
             modelBuilder.Entity("BusinessBuddyApp.Entities.Product", b =>
@@ -315,7 +317,7 @@ namespace BusinessBuddyApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("BusinessBuddyApp.Entities.Role", b =>
@@ -332,7 +334,7 @@ namespace BusinessBuddyApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("BusinessBuddyApp.Entities.User", b =>
@@ -367,7 +369,7 @@ namespace BusinessBuddyApp.Migrations
                     b.HasIndex("RoleId")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("BusinessBuddyApp.Entities.Address", b =>
