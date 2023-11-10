@@ -46,7 +46,6 @@ namespace BusinessBuddyApp.Services
             {
                 order.ClientId = clientId;
                 // tu jest błąd, sprawdzić bo dubluje mi wszystkie rekordy
-                order.OrderDetails = new List<OrderDetail>();
             }
             _dbContext.Orders.Add(order);
             _dbContext.SaveChanges();

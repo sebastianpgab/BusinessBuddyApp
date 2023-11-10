@@ -24,7 +24,7 @@ namespace BusinessBuddyApp.Entities
             modelBuilder.Entity<Client>().HasOne(u => u.Address).WithOne(p => p.Client).HasForeignKey<Address>(a => a.ClientId);
             modelBuilder.Entity<Order>().HasOne(u => u.Client).WithMany(p => p.Orders).HasForeignKey(a => a.ClientId);
             modelBuilder.Entity<Order>().HasOne(u => u.Invoice).WithOne(p => p.Order).HasForeignKey<Order>(a => a.InvoiceId);
-            modelBuilder.Entity<OrderDetail>().HasOne(u => u.Order).WithMany(p => p.OrderDetails).HasForeignKey(a => a.OrderId);
+            modelBuilder.Entity<OrderDetail>().HasOne(u => u.Order).WithOne(p => p.OrderDetail).HasForeignKey<OrderDetail>(a => a.OrderId);
             modelBuilder.Entity<OrderDetail>().HasMany(u => u.OrderProducts).WithOne(p => p.OrderDetail).HasForeignKey(a => a.OrderDetailId);
             modelBuilder.Entity<Role>().HasOne(u => u.User).WithOne(p => p.Role).HasForeignKey<User>(a => a.RoleId);
         }
