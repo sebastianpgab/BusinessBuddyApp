@@ -6,7 +6,7 @@ namespace BusinessBuddyApp.Services
     public interface IOrderService
     {
         public Task<Order> Get(int clientId, int id);
-        public bool Create(int clientId);
+        public bool Create(Order order);
         public Task<IEnumerable<Order>> GetAll(int clientId);
 
     }
@@ -40,16 +40,17 @@ namespace BusinessBuddyApp.Services
             throw new ArgumentNullException("Orders not found");
         }
 
-        public bool Create(int clientId)
+        public bool Create(Order order)
         {
-            var order = new Order();
+            if(order != null)
             {
-                order.ClientId = clientId;
-                // tu jest błąd, sprawdzić bo dubluje mi wszystkie rekordy
+                _dbContext.Orders.Add(order);
+                _dbContext.SaveChanges();
+                return true;
             }
-            _dbContext.Orders.Add(order);
-            _dbContext.SaveChanges();
-            return true;
+            throw new InvalidOperationException("Order is null");
+            
+
         }
 
     }

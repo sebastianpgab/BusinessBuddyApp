@@ -4,6 +4,7 @@ using BusinessBuddyApp.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessBuddyApp.Migrations
 {
     [DbContext(typeof(BusinessBudyDbContext))]
-    partial class BusinessBudyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231114114354_update_entities")]
+    partial class update_entities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,6 +204,7 @@ namespace BusinessBuddyApp.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("InvoiceId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int?>("OrderDetailId")
@@ -212,8 +215,7 @@ namespace BusinessBuddyApp.Migrations
                     b.HasIndex("ClientId");
 
                     b.HasIndex("InvoiceId")
-                        .IsUnique()
-                        .HasFilter("[InvoiceId] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Orders");
                 });
@@ -432,7 +434,9 @@ namespace BusinessBuddyApp.Migrations
 
                     b.HasOne("BusinessBuddyApp.Entities.Invoice", "Invoice")
                         .WithOne("Order")
-                        .HasForeignKey("BusinessBuddyApp.Entities.Order", "InvoiceId");
+                        .HasForeignKey("BusinessBuddyApp.Entities.Order", "InvoiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Client");
 
@@ -519,7 +523,8 @@ namespace BusinessBuddyApp.Migrations
 
             modelBuilder.Entity("BusinessBuddyApp.Entities.Order", b =>
                 {
-                    b.Navigation("OrderDetail");
+                    b.Navigation("OrderDetail")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BusinessBuddyApp.Entities.OrderDetail", b =>

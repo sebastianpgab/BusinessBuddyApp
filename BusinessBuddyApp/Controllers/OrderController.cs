@@ -26,13 +26,11 @@ namespace BusinessBuddyApp.Controllers
             return Ok(orders);
         }
 
-
         [HttpPost]
-        public ActionResult<bool> Post([FromRoute] int clientId) 
+        public ActionResult<bool> Post([FromRoute] Order order) 
         {
-            var isCreated = _orderService.Create(clientId);
+            var isCreated = _orderService.Create(order);
             return Ok(isCreated);
         }
-
     }
 }

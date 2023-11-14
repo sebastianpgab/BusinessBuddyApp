@@ -57,7 +57,7 @@ namespace BusinessBuddyApp.Services
 
             if (orderProduct.Quantity != existingOrderProduct.Quantity)
             {
-                if(product.Quantity >= orderProduct.Quantity)
+               /* if(product.Quantity >= orderProduct.Quantity)
                 {
                     existingOrderProduct.Quantity = orderProduct.Quantity;
                     existingOrderProduct.TotalAmount = orderProduct.Quantity * product.Price;
@@ -65,7 +65,7 @@ namespace BusinessBuddyApp.Services
                 else
                 {
                     throw new InvalidOperationException("The ordered quantity exceeds available stock.");
-                }
+                }*/
             }
             
             existingOrderProduct.ProductId = orderProduct.ProductId;
@@ -89,7 +89,6 @@ namespace BusinessBuddyApp.Services
             return true;
         }
 
-        //tu porawic tworzenie tzn. przy tworzeniu zeby od razu obliczało się total amount
         public bool Create(OrderProduct orderProduct, int orderDetailId)
         {
             if (orderProduct == null)
@@ -99,9 +98,20 @@ namespace BusinessBuddyApp.Services
             var orderDetail = _dbContext.OrderDetails.Find(orderDetailId);
             if(orderDetail != null)
             {
-                orderProduct.OrderDetailId = orderDetailId;
-                _dbContext.OrderProducts.Add(orderProduct);
-                _dbContext.SaveChanges();
+                var product = _dbContext.Products.FirstOrDefault(p => p.Id == orderProduct.ProductId);
+
+                if (product != null && product.StockQuantity >= orderProduct.Quantity)
+                {
+                    product.StockQuantity = product.StockQuantity - orderProduct.Quantity;
+                    orderProduct.TotalAmount = orderProduct.Quantity * product.Price;
+                    orderProduct.OrderDetailId = orderDetailId;
+                    _dbContext.OrderProducts.Add(orderProduct);
+                    _dbContext.SaveChanges();
+                }
+                else
+                {
+                    throw new InvalidOperationException("No product found, or you want more than is available");
+                }
             }
             else
             {

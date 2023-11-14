@@ -58,7 +58,6 @@ namespace BusinessBuddyApp.Services
 
             product.ProductType = updatedProduct.ProductType != product.ProductType ? updatedProduct.ProductType : product.ProductType;
             product.Price = updatedProduct.Price != product.Price ? product.Price : updatedProduct.Price;
-            product.Quantity = updatedProduct.Quantity != product.Quantity ? updatedProduct.Quantity : product.Quantity;
             product.StockQuantity = updatedProduct.StockQuantity != product.StockQuantity ? updatedProduct.StockQuantity : product.StockQuantity;
 
             switch (product.ProductType)
@@ -100,7 +99,6 @@ namespace BusinessBuddyApp.Services
 
         public bool Create(Product product)
         {
-
             if (product is not null)
             {
                 _dbContext.Add(product);
@@ -109,7 +107,7 @@ namespace BusinessBuddyApp.Services
             }
 
             throw new ArgumentNullException("Product" + nameof(product) + "is null");
- 
+
         }
 
 

@@ -27,9 +27,9 @@ namespace BusinessBuddyApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult<bool> Create([FromRoute] int orderId)
+        public ActionResult<bool> Create([FromBody] OrderDetail orderDetail, [FromRoute] int orderId)
         {
-            var isCreated = _orderDetailService.Create(orderId);
+            var isCreated = _orderDetailService.Create(orderDetail, orderId);
             return Ok(isCreated);
         }
     }

@@ -20,9 +20,10 @@
         public DateTime OrderDate { get; set; } = DateTime.Now;
         public DateTime? CompletionDate { get; set; }
         public OrderStatus Status { get; set; } = OrderStatus.InProgress;
-        public string DeliveryAddress { get; set; }
         public string Notes { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
+        public int DeliveryId { get; set; }
+        public Address DeliveryAddress { get; set; }
         public int OrderId { get; set; }
         public virtual Order Order { get; set; }
         public virtual ICollection<OrderProduct> OrderProducts { get; set; }

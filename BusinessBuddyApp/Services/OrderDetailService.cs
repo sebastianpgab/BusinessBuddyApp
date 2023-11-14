@@ -7,7 +7,7 @@ namespace BusinessBuddyApp.Services
     {
         public Task<OrderDetail> Get(int id);
         public Task<IEnumerable<OrderDetail>> GetAll();
-        public bool Create(int orderId);
+        public bool Create(OrderDetail orderDetail, int orderId);
 
     }
 
@@ -38,15 +38,21 @@ namespace BusinessBuddyApp.Services
             throw new ArgumentNullException("OrderDetails not found");
         }
 
-        public bool Create(int orderId)
+
+        public bool Create(OrderDetail orderDetail, int orderId)
         {
-            var orderDetails = new OrderDetail()
+            if(orderDetail != null)
             {
-                OrderId = orderId
-            };
-            _dbContext.OrderDetails.Add(orderDetails);
-            _dbContext.SaveChanges();
-            return true;
+                var order = _dbContext.Orders.FirstOrDefault(p => p.Id == orderId); 
+                if(order != null)
+                {
+                    orderDetail.OrderId = order.Id;
+                    _dbContext.OrderDetails.Add(orderDetail);
+                    _dbContext.SaveChanges();
+                    return true;
+                }
+            }
+            throw new InvalidOperationException("Failed to add OrderDetail.");
         }
     }
 }

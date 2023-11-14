@@ -10,6 +10,7 @@
         public string City { get; set; }
         public int ClientId { get; set; }
         public virtual Client Client { get; set; }
-
+        public int OrderDetailId { get; set; }
+        public virtual OrderDetail OrderDetail { get; set; }
     }
 }
