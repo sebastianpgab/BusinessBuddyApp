@@ -104,6 +104,7 @@ namespace BusinessBuddyApp.Services
                 {
                     product.StockQuantity = product.StockQuantity - orderProduct.Quantity;
                     orderProduct.TotalAmount = orderProduct.Quantity * product.Price;
+                    orderDetail.FinalAmount = orderProduct.TotalAmount + orderDetail.FinalAmount;
                     orderProduct.OrderDetailId = orderDetailId;
                     _dbContext.OrderProducts.Add(orderProduct);
                     _dbContext.SaveChanges();

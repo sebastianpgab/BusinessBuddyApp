@@ -45,9 +45,12 @@ namespace BusinessBuddyApp.Services
             {
                 var order = _dbContext.Orders.FirstOrDefault(p => p.Id == orderId); 
                 if(order != null)
-                {
-                    orderDetail.OrderId = order.Id;
+                {   
+                    orderDetail.OrderId = order.Id;                    
                     _dbContext.OrderDetails.Add(orderDetail);
+                    _dbContext.SaveChanges();
+
+                    order.OrderDetailId = orderDetail.Id;
                     _dbContext.SaveChanges();
                     return true;
                 }
