@@ -20,7 +20,7 @@ namespace BusinessBuddyApp.Controllers
             return Ok(orderProduct);
         }
 
-        [HttpGet("/all")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderProduct>>> GetAll([FromRoute] int orderDetailId)
         {
             var orderProdcts = await _orderProductService.GetAll(orderDetailId);
@@ -34,6 +34,7 @@ namespace BusinessBuddyApp.Controllers
             return Ok(isUpdated);
         }
 
+        //tu się zastanowić czy tego nie usunąc 
         [HttpDelete("{id}")]
         public ActionResult<bool> Delete([FromRoute] int id)
         {

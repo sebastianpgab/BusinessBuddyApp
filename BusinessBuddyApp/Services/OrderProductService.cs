@@ -11,7 +11,6 @@ namespace BusinessBuddyApp.Services
         public bool Update(OrderProduct orderProduct, int id);
         public bool Delete(int orderProductId);
         public bool Create(OrderProduct orderProduct, int orderDetailId);
-
     }
     public class OrderProductService : IOrderProductService
     {
@@ -41,37 +40,50 @@ namespace BusinessBuddyApp.Services
             throw new InvalidOperationException("Order Products not found");
         }
 
-        public bool Update(OrderProduct orderProduct, int id) 
+        public bool Update(OrderProduct updatedOrderProduct, int id)
         {
-            if (orderProduct == null)
+            if (updatedOrderProduct == null)
             {
-                throw new ArgumentNullException(nameof(orderProduct));
+                throw new ArgumentNullException(nameof(updatedOrderProduct));
             }
-            var existingOrderProduct = _dbContext.OrderProducts.FirstOrDefault(op => op.Id == id);
+
+            var existingOrderProduct = _dbContext.OrderProducts
+                .Include(op => op.Product)
+                .Include(op => op.OrderDetail)
+                .SingleOrDefault(op => op.Id == id);
 
             if (existingOrderProduct == null)
             {
-                throw new ArgumentNullException("Order product not found.");
+                throw new KeyNotFoundException("Order product not found.");
             }
-            var product = _dbContext.Products.First(p => p.Id == existingOrderProduct.ProductId);
 
-            if (orderProduct.Quantity != existingOrderProduct.Quantity)
+            if (updatedOrderProduct.Quantity != existingOrderProduct.Quantity)
             {
-               /* if(product.Quantity >= orderProduct.Quantity)
+                if (existingOrderProduct.Product.StockQuantity >= updatedOrderProduct.Quantity)
                 {
-                    existingOrderProduct.Quantity = orderProduct.Quantity;
-                    existingOrderProduct.TotalAmount = orderProduct.Quantity * product.Price;
+                    double oldTotalAmount = existingOrderProduct.TotalAmount;                    
+                    existingOrderProduct.Quantity = updatedOrderProduct.Quantity;
+                    existingOrderProduct.Product.StockQuantity -= existingOrderProduct.Quantity;
+                    existingOrderProduct.TotalAmount = updatedOrderProduct.Quantity * existingOrderProduct.Product.Price;
+
+                    UpdateOrderTotalAmount(existingOrderProduct.OrderDetail, existingOrderProduct.TotalAmount - oldTotalAmount);
                 }
                 else
                 {
                     throw new InvalidOperationException("The ordered quantity exceeds available stock.");
-                }*/
+                }
             }
-            
-            existingOrderProduct.ProductId = orderProduct.ProductId;
-
             _dbContext.SaveChanges();
             return true;
+        }
+
+        private void UpdateOrderTotalAmount(OrderDetail orderDetail, double amountDifference)
+        {
+            if (orderDetail == null)
+            {
+                throw new ArgumentNullException(nameof(orderDetail));
+            }
+            orderDetail.FinalAmount += amountDifference;
         }
 
         public bool Delete(int orderProductId)
@@ -84,7 +96,6 @@ namespace BusinessBuddyApp.Services
             }
 
             _dbContext.OrderProducts.Remove(orderProduct);
-
             _dbContext.SaveChanges();
             return true;
         }
