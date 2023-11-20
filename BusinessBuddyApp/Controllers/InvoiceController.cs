@@ -20,9 +20,9 @@ namespace BusinessBuddyApp.Controllers
         }
 
         [HttpPost("order/{id}")]
-        public ActionResult<bool> Create([FromBody]Invoice invoice, [FromRoute] int orderId)
+        public async Task<ActionResult<bool>> Create([FromBody]Invoice invoice, [FromRoute] int id)
         {
-            var isCreated = _invoiceService.Create(invoice, orderId);
+            var isCreated = await _invoiceService.Create(invoice, id);
             return Ok(isCreated);
         }
     }
