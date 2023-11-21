@@ -1,9 +1,11 @@
 using BusinessBuddyApp.Entities;
+using BusinessBuddyApp.Middleware;
 using BusinessBuddyApp.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using NLog.Web;
 
 namespace BusinessBuddyApp
 {
@@ -12,6 +14,7 @@ namespace BusinessBuddyApp
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Host.UseNLog();
 
             // Inicjowanie konfiguracji
             var configuration = builder.Configuration;
@@ -25,6 +28,7 @@ namespace BusinessBuddyApp
             builder.Services.AddScoped<IOrderDetailService,  OrderDetailService>();
             builder.Services.AddScoped<IInvoiceService, InvoiceService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<ErrorHandlingMiddleware>();
             builder.Services.AddDbContext<BusinessBudyDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("BusinessBudyDbConnection")));
 
@@ -35,7 +39,7 @@ namespace BusinessBuddyApp
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
