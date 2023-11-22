@@ -1,4 +1,5 @@
 ﻿using BusinessBuddyApp.Entities;
+using BusinessBuddyApp.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace BusinessBuddyApp.Services
@@ -26,7 +27,7 @@ namespace BusinessBuddyApp.Services
             {
                 return products;
             }
-            throw new ArgumentNullException("No products found");
+            throw new NotFoundException("No products found");
         }
 
         public async Task<Product> Get(int id)
@@ -41,7 +42,7 @@ namespace BusinessBuddyApp.Services
             {
                 return product;
             }
-            throw new ArgumentNullException("Product not found");
+            throw new NotFoundException("Product not found");
 
         }
 
@@ -107,10 +108,6 @@ namespace BusinessBuddyApp.Services
             }
 
             throw new ArgumentNullException("Product" + nameof(product) + "is null");
-
         }
-
-
-
     }
 }

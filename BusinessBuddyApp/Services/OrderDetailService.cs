@@ -1,4 +1,5 @@
 ﻿using BusinessBuddyApp.Entities;
+using BusinessBuddyApp.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace BusinessBuddyApp.Services
@@ -25,7 +26,7 @@ namespace BusinessBuddyApp.Services
             {
                 return orderDetail;
             }
-            throw new ArgumentNullException("OrderDetail not found");
+            throw new NotFoundException("OrderDetail not found");
         }
 
         public async Task<IEnumerable<OrderDetail>> GetAll()
@@ -35,7 +36,7 @@ namespace BusinessBuddyApp.Services
             {
                 return orderDetails;
             }
-            throw new ArgumentNullException("OrderDetails not found");
+            throw new NotFoundException("OrderDetails not found");
         }
 
 

@@ -30,7 +30,7 @@ namespace BusinessBuddyApp.Services
             {
                 return clients;
             }
-            throw new ArgumentNullException("List of clients not found");
+            throw new NotFoundException("List of clients not found");
         }
 
         public Client Get(int id)
@@ -40,7 +40,7 @@ namespace BusinessBuddyApp.Services
             {
                 return client;
             }
-            throw new ArgumentNullException($"Client {id} not found");
+            throw new NotFoundException($"Client {id} not found");
         }
 
         public async Task<Client> Update(Client client, int id)
@@ -57,7 +57,7 @@ namespace BusinessBuddyApp.Services
                 _dbContext.SaveChanges();
                 return clientToUpdate;
             }
-            throw new ArgumentNullException($"Client {id} not found");
+            throw new NotFoundException($"Client {id} not found");
         }
 
         public bool Create(Client client)
@@ -68,7 +68,7 @@ namespace BusinessBuddyApp.Services
                 _dbContext.SaveChanges();
                 return true;
             }
-            throw new ArgumentNullException("Client is null");
+            throw new NotFoundException("Client is null");
         }
     }
 }

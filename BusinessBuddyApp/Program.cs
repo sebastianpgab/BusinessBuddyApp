@@ -29,6 +29,7 @@ namespace BusinessBuddyApp
             builder.Services.AddScoped<IInvoiceService, InvoiceService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<ErrorHandlingMiddleware>();
+            builder.Services.AddScoped<RequestTimeMiddleware>();
             builder.Services.AddDbContext<BusinessBudyDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("BusinessBudyDbConnection")));
 
@@ -40,6 +41,7 @@ namespace BusinessBuddyApp
                 app.UseDeveloperExceptionPage();
             }
             app.UseMiddleware<ErrorHandlingMiddleware>();
+            app.UseMiddleware<RequestTimeMiddleware>();
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();

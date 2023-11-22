@@ -1,4 +1,7 @@
-﻿namespace BusinessBuddyApp.Middleware
+﻿using BusinessBuddyApp.Exceptions;
+using System.Diagnostics;
+
+namespace BusinessBuddyApp.Middleware
 {
     public class ErrorHandlingMiddleware : IMiddleware
     {
@@ -12,6 +15,13 @@
             try
             {
                 await next.Invoke(context);
+            }
+            catch (NotFoundException notFoundEx)
+            {
+                _logger.LogInformation(notFoundEx.Message, notFoundEx);
+                context.Response.StatusCode = 404;
+                await context.Response.WriteAsync("Resource not found");
+
             }
             catch (Exception ex)
             {

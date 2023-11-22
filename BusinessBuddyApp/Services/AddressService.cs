@@ -1,4 +1,5 @@
 ﻿using BusinessBuddyApp.Entities;
+using BusinessBuddyApp.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace BusinessBuddyApp.Services
@@ -25,7 +26,7 @@ namespace BusinessBuddyApp.Services
             {
                 return addresses;
             }
-            throw new ArgumentNullException("Addresses not found");
+            throw new NotFoundException("Addresses not found");
         }
 
         public async Task<Address> Get(int id)
@@ -35,7 +36,7 @@ namespace BusinessBuddyApp.Services
             {
                 return address;
             }
-            throw new ArgumentNullException("Address not found");
+            throw new NotFoundException("Address not found");
         }
 
         public async Task<Address> Update(Address newAddress, int id)
@@ -51,7 +52,7 @@ namespace BusinessBuddyApp.Services
                 _dbContext.SaveChanges();
                 return address;
             }
-            throw new ArgumentNullException("Address not found");
+            throw new NotFoundException("Address not found");
         }
 
         public bool Create(Address address, int clientId)
@@ -63,7 +64,7 @@ namespace BusinessBuddyApp.Services
                 _dbContext.SaveChanges();
                 return true;
             }
-            throw new ArgumentNullException("Address is null");
+            throw new NotFoundException("Address is null");
         }
     }
 }

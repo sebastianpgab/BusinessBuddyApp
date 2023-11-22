@@ -1,4 +1,5 @@
 ﻿using BusinessBuddyApp.Entities;
+using BusinessBuddyApp.Exceptions;
 using Microsoft.AspNetCore.DataProtection.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,7 +27,7 @@ namespace BusinessBuddyApp.Services
                 return invoice;
 
             }
-            throw new InvalidOperationException($"Invoice with ID {invoiceId} not found.");
+            throw new NotFoundException($"Invoice with ID {invoiceId} not found.");
         }
 
         public async Task<bool> Create(Invoice invoice, int orderId)
@@ -47,7 +48,7 @@ namespace BusinessBuddyApp.Services
                 }
                 return true;
             }
-            throw new ArgumentNullException(nameof(invoice));
+            throw new NotFoundException(nameof(invoice));
         }
 
         public async Task<string> CreateInvoiceNumber(Invoice invoice)

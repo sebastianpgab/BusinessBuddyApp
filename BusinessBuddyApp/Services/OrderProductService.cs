@@ -1,4 +1,5 @@
 ﻿using BusinessBuddyApp.Entities;
+using BusinessBuddyApp.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
@@ -122,12 +123,12 @@ namespace BusinessBuddyApp.Services
                 }
                 else
                 {
-                    throw new InvalidOperationException("No product found, or you want more than is available");
+                    throw new NotFoundException("No product found, or you want more than is available");
                 }
             }
             else
             {
-                throw new InvalidOperationException("OrderDetail with the given ID was not found.");
+                throw new NotFoundException("OrderDetail with the given ID was not found.");
             }
             return true;
         }
