@@ -21,6 +21,7 @@ namespace BusinessBuddyApp
 
             // Dodawanie us³ug
             builder.Services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
+            builder.Services.AddScoped<Seeder>();
             builder.Services.AddScoped<IClientService, ClientService>();
             builder.Services.AddScoped<IAddressService, AddressService>();
             builder.Services.AddScoped<IProductService, ProductService>();
@@ -35,11 +36,16 @@ namespace BusinessBuddyApp
 
             var app = builder.Build();
 
+            var scope = app.Services.CreateScope();
+            var seeder = scope.ServiceProvider.GetRequiredService<Seeder>();
+
+            seeder.Seed();
             // Konfiguracja middleware
             if (app.Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            
             app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseMiddleware<RequestTimeMiddleware>();
             app.UseHttpsRedirection();
