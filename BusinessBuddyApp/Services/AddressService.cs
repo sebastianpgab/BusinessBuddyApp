@@ -57,7 +57,8 @@ namespace BusinessBuddyApp.Services
 
         public bool Create(Address address, int clientId)
         {
-            if(address is not null)
+            var client = _dbContext.Clients.FirstOrDefault(p => p.Id == clientId);
+            if(client != null)
             {
                 address.ClientId = clientId;
                 _dbContext.Add(address);
