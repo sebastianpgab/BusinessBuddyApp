@@ -8,9 +8,11 @@ namespace BusinessBuddyApp.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         [Required]
+        [EmailAddress]
         public string Email { get; set; }
+        [Required]
         public string PasswordHash { get; set; }
-        public int RoleId { get; set; }
-        public virtual Role Role { get; set; }
+        public int RoleId { get; set; } = 1;
+        public virtual Role? Role { get; set; }
     }
 }

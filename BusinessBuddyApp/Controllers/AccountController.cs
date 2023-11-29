@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BusinessBuddyApp.Controllers
 {
     [Route("api/account")]
+    [ApiController]
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;

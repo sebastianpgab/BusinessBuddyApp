@@ -1,11 +1,17 @@
 using BusinessBuddyApp.Entities;
 using BusinessBuddyApp.Middleware;
+using BusinessBuddyApp.Models;
+using BusinessBuddyApp.Models.Validators;
 using BusinessBuddyApp.Services;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using NLog.Web;
+using System.Reflection;
 
 namespace BusinessBuddyApp
 {
@@ -20,6 +26,7 @@ namespace BusinessBuddyApp
             var configuration = builder.Configuration;
 
             // Dodawanie us³ug
+            builder.Services.AddControllers().AddFluentValidation();
             builder.Services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
             builder.Services.AddScoped<Seeder>();
             builder.Services.AddScoped<IClientService, ClientService>();
@@ -29,8 +36,15 @@ namespace BusinessBuddyApp
             builder.Services.AddScoped<IOrderDetailService,  OrderDetailService>();
             builder.Services.AddScoped<IInvoiceService, InvoiceService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
-            builder.Services.AddScoped<ErrorHandlingMiddleware>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IPasswordHasher<RegisterUserDto>, PasswordHasher<RegisterUserDto>>();
+            builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
+            //Fluent Validations
+            builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+            builder.Services.AddScoped<IValidator<AddressDto>, AddressDtoValidator>();
+            // Middlewares
             builder.Services.AddScoped<RequestTimeMiddleware>();
+            builder.Services.AddScoped<ErrorHandlingMiddleware>();
             builder.Services.AddDbContext<BusinessBudyDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("BusinessBudyDbConnection")));
 
