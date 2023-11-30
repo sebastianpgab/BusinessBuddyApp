@@ -11,6 +11,7 @@ namespace BusinessBuddyApp
             // CreateMap<SourceType, DestinationType>();
             CreateMap<RegisterUserDto, User>();
             CreateMap<AddressDto, Address>();
+            CreateMap<ClientDto, Client>();
         }
     }
 }

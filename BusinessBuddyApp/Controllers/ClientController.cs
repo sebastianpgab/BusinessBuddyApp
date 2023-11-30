@@ -1,4 +1,5 @@
 ﻿using BusinessBuddyApp.Entities;
+using BusinessBuddyApp.Models;
 using BusinessBuddyApp.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,10 +37,10 @@ namespace BusinessBuddyApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult<bool> Create([FromBody] Client client)
+        public ActionResult Create([FromBody] ClientDto clientDto)
         {
-            var result = _clientService.Create(client);
-            return Ok(result);
+            _clientService.Create(clientDto);
+            return Ok();
         }
 
     }

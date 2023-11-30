@@ -1,4 +1,5 @@
 ﻿using BusinessBuddyApp.Entities;
+using BusinessBuddyApp.Models;
 using BusinessBuddyApp.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,10 +37,10 @@ namespace BusinessBuddyApp.Controllers
         }
 
         [HttpPost("{clientId}")]
-        public ActionResult<bool> Create([FromBody] Address address, [FromRoute] int clientId)
+        public ActionResult Create([FromBody] AddressDto addressDto, [FromRoute] int clientId)
         {
-            var isCreated = _addressService.Create(address, clientId);
-            return Ok(isCreated);
+            _addressService.Create(addressDto, clientId);
+            return Ok();
         }
 
     }

@@ -42,9 +42,11 @@ namespace BusinessBuddyApp
             //Fluent Validations
             builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
             builder.Services.AddScoped<IValidator<AddressDto>, AddressDtoValidator>();
-            // Middlewares
+            builder.Services.AddScoped<IValidator<ClientDto>, ClientDtoValidator>();
+            //Middlewares
             builder.Services.AddScoped<RequestTimeMiddleware>();
             builder.Services.AddScoped<ErrorHandlingMiddleware>();
+            //Db Connection
             builder.Services.AddDbContext<BusinessBudyDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("BusinessBudyDbConnection")));
 

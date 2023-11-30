@@ -25,7 +25,6 @@ namespace BusinessBuddyApp.Services
             if(invoice != null)
             {
                 return invoice;
-
             }
             throw new NotFoundException($"Invoice with ID {invoiceId} not found.");
         }
@@ -37,14 +36,16 @@ namespace BusinessBuddyApp.Services
                 var invoiceNumber = await CreateInvoiceNumber(invoice);
                 invoice.InvoiceNumber = invoiceNumber;
                 invoice.DueDate = DateTime.Now.AddDays(14);
+
                 _dbContext.Invoices.Add(invoice);
                 _dbContext.SaveChanges();
+
                 var order = _dbContext.Orders.Find(orderId);
+
                 if (order != null)
                 {
                     order.InvoiceId = invoice.Id;
                     await _dbContext.SaveChangesAsync();
-
                 }
                 return true;
             }

@@ -1,5 +1,7 @@
-﻿using BusinessBuddyApp.Entities;
+﻿using AutoMapper;
+using BusinessBuddyApp.Entities;
 using BusinessBuddyApp.Exceptions;
+using BusinessBuddyApp.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BusinessBuddyApp.Services
@@ -9,15 +11,18 @@ namespace BusinessBuddyApp.Services
         public ICollection<Address> GetAll();
         public Task<Address> Get(int id);
         public Task<Address> Update(Address newAddress, int id);
-        public bool Create(Address address, int clientId);
+        public void Create(AddressDto addressDto, int clientId);
 
     }
     public class AddressService : IAddressService
     {
         private readonly BusinessBudyDbContext _dbContext;
-        public AddressService(BusinessBudyDbContext dbContext)
+        private readonly IMapper _mapper;
+        public AddressService(BusinessBudyDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
+
         }
         public ICollection<Address> GetAll() 
         {
@@ -55,17 +60,17 @@ namespace BusinessBuddyApp.Services
             throw new NotFoundException("Address not found");
         }
 
-        public bool Create(Address address, int clientId)
+        public void Create(AddressDto addressDto, int clientId)
         {
             var client = _dbContext.Clients.FirstOrDefault(p => p.Id == clientId);
             if(client != null)
             {
-                address.ClientId = clientId;
-                _dbContext.Add(address);
+                addressDto.ClientId = clientId;
+                var addressMapped = _mapper.Map<Address>(addressDto);
+                _dbContext.Add(addressMapped);
                 _dbContext.SaveChanges();
-                return true;
             }
-            throw new NotFoundException("Address is null");
+            throw new NotFoundException("Client not found");
         }
     }
 }

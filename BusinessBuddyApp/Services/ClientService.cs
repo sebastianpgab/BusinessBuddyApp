@@ -4,6 +4,8 @@ using BusinessBuddyApp.Migrations;
 using BusinessBuddyApp.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Server.IIS.Core;
+using BusinessBuddyApp.Models;
+using AutoMapper;
 
 namespace BusinessBuddyApp.Services
 {
@@ -12,15 +14,17 @@ namespace BusinessBuddyApp.Services
         public ICollection<Client> GetAll();
         public Client Get(int id);
         public Task<Client> Update(Client client, int id);
-        public bool Create(Client client);
+        public void Create(ClientDto clientDto);
 
     }
     public class ClientService : IClientService
     {
-        public readonly BusinessBudyDbContext _dbContext;
-        public ClientService(BusinessBudyDbContext dbContext)
+        private readonly BusinessBudyDbContext _dbContext;
+        private readonly IMapper _mapper;
+        public ClientService(BusinessBudyDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
         public ICollection<Client> GetAll()
@@ -60,15 +64,11 @@ namespace BusinessBuddyApp.Services
             throw new NotFoundException($"Client {id} not found");
         }
 
-        public bool Create(Client client)
+        public void Create(ClientDto clientDto)
         {
-            if(client is not null)
-            {
-                _dbContext.Add(client);
-                _dbContext.SaveChanges();
-                return true;
-            }
-            throw new NotFoundException("Client is null");
+            var clientMapped = _mapper.Map<Client>(clientDto);
+            _dbContext.Add(clientMapped);
+            _dbContext.SaveChanges();
         }
     }
 }
