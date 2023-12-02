@@ -15,10 +15,17 @@ namespace BusinessBuddyApp.Controllers
             _accountService = accountService;
         }
         [HttpPost("register")]
-        public ActionResult RegisterUser([FromBody] RegisterUserDto userDto)
+        public ActionResult RegisterUser([FromBody] RegisterUserDto registerUserDto)
         {
-            _accountService.RegisterUser(userDto);
+            _accountService.RegisterUser(registerUserDto);
             return Ok();
+        }
+
+        [HttpPost("login")]
+        public ActionResult LoginUser([FromBody] LoginUserDto loginUserDto)
+        {
+            string token = _accountService.GenerateJwt(loginUserDto);
+            return Ok(token);
         }
     }
 }

@@ -16,12 +16,17 @@ namespace BusinessBuddyApp.Middleware
             {
                 await next.Invoke(context);
             }
-            catch (NotFoundException notFoundEx)
+            catch (BadRequestException badRequestEx)
             {
-                _logger.LogInformation(notFoundEx.Message, notFoundEx);
+                _logger.LogError(badRequestEx.Message, badRequestEx);
                 context.Response.StatusCode = 404;
                 await context.Response.WriteAsync("Resource not found");
-
+            }
+            catch (NotFoundException notFoundEx)
+            {
+                _logger.LogError(notFoundEx.Message, notFoundEx);
+                context.Response.StatusCode = 404;
+                await context.Response.WriteAsync("Resource not found");
             }
             catch (Exception ex)
             {
