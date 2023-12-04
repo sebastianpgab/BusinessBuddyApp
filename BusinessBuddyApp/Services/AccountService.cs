@@ -4,6 +4,7 @@ using BusinessBuddyApp.Exceptions;
 using BusinessBuddyApp.Models;
 using BusinessBuddyApp.Settings;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -50,7 +51,7 @@ namespace BusinessBuddyApp.Services
 
         public string GenerateJwt(LoginUserDto loginUserDto)
         {
-            var user = _dbContext.Users.FirstOrDefault(p => p.Email == loginUserDto.Email);
+            var user = _dbContext.Users.Include(c => c.Role).FirstOrDefault(p => p.Email == loginUserDto.Email);
 
             if(user == null)
             {
