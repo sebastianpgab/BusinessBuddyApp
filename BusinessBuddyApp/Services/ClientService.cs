@@ -6,12 +6,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Server.IIS.Core;
 using BusinessBuddyApp.Models;
 using AutoMapper;
+using System.Linq;
+using System.Diagnostics.Eventing.Reader;
 
 namespace BusinessBuddyApp.Services
 {
     public interface IClientService
     {
-        public ICollection<Client> GetAll();
+        public ICollection<Client> GetAll(string searchPhrase);
         public Client Get(int id);
         public Task<Client> Update(Client client, int id);
         public void Create(ClientDto clientDto);
@@ -27,12 +29,21 @@ namespace BusinessBuddyApp.Services
             _mapper = mapper;
         }
 
-        public ICollection<Client> GetAll()
+        public ICollection<Client> GetAll(string searchPhrase)
         {
-            var clients = _dbContext.Clients.ToList();
-            if (clients.Any())
+            if (searchPhrase == null)
             {
-                return clients;
+                var clients = _dbContext.Clients.ToList();
+
+                if (clients.Any())
+                {
+                    return clients;
+                }
+            }
+            else
+            {
+                var foundByName = FindByName(searchPhrase);
+                return foundByName;
             }
             throw new NotFoundException("List of clients not found");
         }
@@ -69,6 +80,24 @@ namespace BusinessBuddyApp.Services
             var clientMapped = _mapper.Map<Client>(clientDto);
             _dbContext.Add(clientMapped);
             _dbContext.SaveChanges();
+        }
+
+        public List<Client> FindByName(string searchPhrase)
+        {
+            var lowercasedAndTrimPhrase = searchPhrase.ToLower().Trim();
+            var reversedLowercasePhrase = lowercasedAndTrimPhrase.Split(' ');
+            var name = reversedLowercasePhrase.First();
+            var surName = reversedLowercasePhrase.Last();
+
+            var clients = _dbContext.Clients.Where(p => p.FirstName == name && p.LastName == surName).ToList();
+
+            if(clients.Any())
+            {
+                return clients;
+            }
+
+            throw new NotFoundException($"Client with name '{name}' and surname '{surName}' was not found.");
+
         }
     }
 }
