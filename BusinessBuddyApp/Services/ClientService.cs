@@ -13,7 +13,7 @@ namespace BusinessBuddyApp.Services
 {
     public interface IClientService
     {
-        public ICollection<Client> GetAll(string searchPhrase);
+        public PagedResult<Client> GetAll(ClientQuery clientQuery);
         public Client Get(int id);
         public Task<Client> Update(Client client, int id);
         public void Create(ClientDto clientDto);
@@ -29,20 +29,11 @@ namespace BusinessBuddyApp.Services
             _mapper = mapper;
         }
 
-        public ICollection<Client> GetAll(string searchPhrase)
+        public PagedResult<Client> GetAll(ClientQuery clientQuery)
         {
-            if (searchPhrase == null)
-            {
-                var clients = _dbContext.Clients.ToList();
-
-                if (clients.Any())
-                {
-                    return clients;
-                }
-            }
-            else
-            {
-                var foundByName = FindByName(searchPhrase);
+            if (clientQuery != null)
+            {              
+                var foundByName = FindByName(clientQuery);
                 return foundByName;
             }
             throw new NotFoundException("List of clients not found");
@@ -82,18 +73,21 @@ namespace BusinessBuddyApp.Services
             _dbContext.SaveChanges();
         }
 
-        public List<Client> FindByName(string searchPhrase)
+        public PagedResult<Client> FindByName(ClientQuery clientQuery)
         {
-            var lowercasedAndTrimPhrase = searchPhrase.ToLower().Trim();
+            var lowercasedAndTrimPhrase = clientQuery.SearchPhrase.ToLower().Trim();
             var reversedLowercasePhrase = lowercasedAndTrimPhrase.Split(' ');
             var name = reversedLowercasePhrase.First();
             var surName = reversedLowercasePhrase.Last();
 
-            var clients = _dbContext.Clients.Where(p => p.FirstName == name && p.LastName == surName).ToList();
+            var baseQuery = _dbContext.Clients.Where(p => p.FirstName.ToLower() == name && p.LastName.ToLower() == surName);
+            var clients = baseQuery.Skip(clientQuery.PageSize * (clientQuery.PageNumber - 1)).Take(clientQuery.PageSize).ToList();
+
+            var result = new PagedResult<Client>(clients, baseQuery.Count(), clientQuery.PageSize, clientQuery.PageNumber);
 
             if(clients.Any())
             {
-                return clients;
+                return result;
             }
 
             throw new NotFoundException($"Client with name '{name}' and surname '{surName}' was not found.");

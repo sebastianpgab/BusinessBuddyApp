@@ -16,9 +16,9 @@ namespace BusinessBuddyApp.Controllers
         }
 
         [HttpGet]
-        public ActionResult<ICollection<Client>> GetAll([FromQuery] string searchPhrase)
+        public ActionResult<ICollection<Client>> GetAll([FromQuery] ClientQuery clientQuery)
         {
-            var clients = _clientService.GetAll(searchPhrase);
+            var clients = _clientService.GetAll(clientQuery);
             return Ok(clients);
         }
 
