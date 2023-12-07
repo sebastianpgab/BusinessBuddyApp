@@ -8,6 +8,8 @@ using BusinessBuddyApp.Models;
 using AutoMapper;
 using System.Linq;
 using System.Diagnostics.Eventing.Reader;
+using System.Xml.Linq;
+using System.Linq.Expressions;
 
 namespace BusinessBuddyApp.Services
 {
@@ -75,22 +77,47 @@ namespace BusinessBuddyApp.Services
 
         public PagedResult<Client> FindByName(ClientQuery clientQuery)
         {
-            var lowercasedAndTrimPhrase = clientQuery.SearchPhrase.ToLower().Trim();
-            var reversedLowercasePhrase = lowercasedAndTrimPhrase.Split(' ');
-            var name = reversedLowercasePhrase.First();
-            var surName = reversedLowercasePhrase.Last();
+            IQueryable<Client> baseQuery;
 
-            var baseQuery = _dbContext.Clients.Where(p => p.FirstName.ToLower() == name && p.LastName.ToLower() == surName);
+            if (clientQuery.SearchPhrase == null)
+            {
+                baseQuery = _dbContext.Clients;
+            }
+            else
+            {
+                var lowercasedAndTrimPhrase = clientQuery.SearchPhrase.ToLower().Trim();
+                var reversedLowercasePhrase = lowercasedAndTrimPhrase.Split(' ');
+                var name = reversedLowercasePhrase.First();
+                var surName = reversedLowercasePhrase.Last();
+
+                baseQuery = _dbContext.Clients.Where(p => p.FirstName.ToLower() == name && p.LastName.ToLower() == surName);
+            }
+
+            if (!string.IsNullOrEmpty(clientQuery.SortBy))
+            {
+                var columnSelectors = new Dictionary<string, Expression<Func<Client, object>>>
+                {
+                    { nameof(Client.FirstName), p => p.FirstName},
+                    { nameof(Client.LastName), p => p.LastName},
+                    { nameof(Client.Email), p => p.Email},
+                };
+                var selectedColumn = columnSelectors[clientQuery.SortBy];
+
+                baseQuery = clientQuery.SortDirection == SortDirection.ASC
+                    ? baseQuery.OrderBy(selectedColumn)
+                    : baseQuery.OrderByDescending(selectedColumn);
+
+            }
+
             var clients = baseQuery.Skip(clientQuery.PageSize * (clientQuery.PageNumber - 1)).Take(clientQuery.PageSize).ToList();
-
             var result = new PagedResult<Client>(clients, baseQuery.Count(), clientQuery.PageSize, clientQuery.PageNumber);
 
-            if(clients.Any())
+            if (clients.Any())
             {
                 return result;
             }
 
-            throw new NotFoundException($"Client with name '{name}' and surname '{surName}' was not found.");
+            throw new NotFoundException($"Client with was not found.");
 
         }
     }

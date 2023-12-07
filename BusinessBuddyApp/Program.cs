@@ -68,6 +68,7 @@ namespace BusinessBuddyApp
             builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
             builder.Services.AddScoped<IValidator<AddressDto>, AddressDtoValidator>();
             builder.Services.AddScoped<IValidator<ClientDto>, ClientDtoValidator>();
+            builder.Services.AddScoped<IValidator<ClientQuery>, ClientQueryValidator>();
             //Middlewares
             builder.Services.AddScoped<RequestTimeMiddleware>();
             builder.Services.AddScoped<ErrorHandlingMiddleware>();
