@@ -35,7 +35,7 @@ namespace BusinessBuddyApp.Services
         {
             if (clientQuery != null)
             {              
-                var foundByName = FindByName(clientQuery);
+                var foundByName = SearchClients(clientQuery);
                 return foundByName;
             }
             throw new NotFoundException("List of clients not found");
@@ -75,7 +75,7 @@ namespace BusinessBuddyApp.Services
             _dbContext.SaveChanges();
         }
 
-        public PagedResult<Client> FindByName(ClientQuery clientQuery)
+        public PagedResult<Client> SearchClients(ClientQuery clientQuery)
         {
             IQueryable<Client> baseQuery;
 
@@ -118,7 +118,6 @@ namespace BusinessBuddyApp.Services
             }
 
             throw new NotFoundException($"Client with was not found.");
-
         }
     }
 }
