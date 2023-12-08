@@ -4,6 +4,8 @@ using BusinessBuddyApp.Models;
 using BusinessBuddyApp.Models.Validators;
 using BusinessBuddyApp.Services;
 using BusinessBuddyApp.Settings;
+using DinkToPdf.Contracts;
+using DinkToPdf;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -15,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using NLog.Web;
 using System.Reflection;
 using System.Text;
+using BusinessBuddyApp.Services.Invoice;
 
 namespace BusinessBuddyApp
 {
@@ -63,6 +66,7 @@ namespace BusinessBuddyApp
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+            builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
             //Fluent Validations
             builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
@@ -75,6 +79,9 @@ namespace BusinessBuddyApp
             //Db Connection
             builder.Services.AddDbContext<BusinessBudyDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("BusinessBudyDbConnection")));
+            //cors
+            builder.Services.AddCors(options => options.AddPolicy("FrontedClient", builder => 
+            builder.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin()));
 
             var app = builder.Build();
 
@@ -82,6 +89,7 @@ namespace BusinessBuddyApp
             var seeder = scope.ServiceProvider.GetRequiredService<Seeder>();
 
             seeder.Seed();
+            app.UseCors("FrontedClient");
             // Konfiguracja middleware
             if (app.Environment.IsDevelopment())
             {
