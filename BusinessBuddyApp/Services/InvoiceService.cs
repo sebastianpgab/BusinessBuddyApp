@@ -1,6 +1,5 @@
 ﻿using BusinessBuddyApp.Entities;
 using BusinessBuddyApp.Exceptions;
-using Microsoft.AspNetCore.DataProtection.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace BusinessBuddyApp.Services
@@ -8,28 +7,30 @@ namespace BusinessBuddyApp.Services
     public interface IInvoiceService
     {
         public Task<Invoice> Get(int invoiceId);
-        public Task<bool> Create(Invoice invoice, int orderId);
+        public Task<Invoice> Create(Invoice invoice, int orderId);
 
 
     }
     public class InvoiceService : IInvoiceService
     {
         private readonly BusinessBudyDbContext _dbContext;
-        public InvoiceService(BusinessBudyDbContext dbContext)
+        private readonly IInvoiceGenerator _invoiceGenerator;
+        public InvoiceService(BusinessBudyDbContext dbContext, IInvoiceGenerator invoiceGenerator)
         {
             _dbContext = dbContext;
+            _invoiceGenerator = invoiceGenerator;
         }
         public async Task<Invoice> Get(int invoiceId)
         {
             var invoice = await _dbContext.Invoices.FindAsync(invoiceId);
-            if(invoice != null)
+            if (invoice != null)
             {
                 return invoice;
             }
             throw new NotFoundException($"Invoice with ID {invoiceId} not found.");
         }
 
-        public async Task<bool> Create(Invoice invoice, int orderId)
+        public async Task<Invoice> Create(Invoice invoice, int orderId)
         {
             if (invoice != null)
             {
@@ -41,13 +42,15 @@ namespace BusinessBuddyApp.Services
                 _dbContext.SaveChanges();
 
                 var order = _dbContext.Orders.Find(orderId);
+                var htmlString = _invoiceGenerator.GetHTMLString(invoice);
+                _invoiceGenerator.GenerateInvoice(htmlString);
 
                 if (order != null)
                 {
                     order.InvoiceId = invoice.Id;
                     await _dbContext.SaveChangesAsync();
                 }
-                return true;
+                return invoice;
             }
             throw new NotFoundException(nameof(invoice));
         }
@@ -59,7 +62,7 @@ namespace BusinessBuddyApp.Services
             {
                 lastInvoice = await _dbContext.Invoices.OrderBy(p => p.Id).Select(p => p.InvoiceNumber).LastOrDefaultAsync();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
@@ -67,7 +70,7 @@ namespace BusinessBuddyApp.Services
             if (lastInvoice == null)
             {
                 int firstNumber = 0;
-                invoice.InvoiceNumber = firstNumber + invoice.InvoiceDate.ToString("yyyyMMdd");    
+                invoice.InvoiceNumber = firstNumber + invoice.InvoiceDate.ToString("yyyyMMdd");
                 return invoice.InvoiceNumber;
             }
             else

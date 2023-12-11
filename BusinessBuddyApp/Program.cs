@@ -17,7 +17,6 @@ using Microsoft.IdentityModel.Tokens;
 using NLog.Web;
 using System.Reflection;
 using System.Text;
-using BusinessBuddyApp.Services.Invoice;
 
 namespace BusinessBuddyApp
 {
@@ -65,6 +64,8 @@ namespace BusinessBuddyApp
             builder.Services.AddScoped<IInvoiceService, InvoiceService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IInvoiceGenerator, InvoiceGenerator>();
+            builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
