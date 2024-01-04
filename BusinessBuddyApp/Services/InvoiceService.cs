@@ -15,6 +15,8 @@ namespace BusinessBuddyApp.Services
     {
         private readonly BusinessBudyDbContext _dbContext;
         private readonly IInvoiceGenerator _invoiceGenerator;
+        string directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "invoices");
+
         public InvoiceService(BusinessBudyDbContext dbContext, IInvoiceGenerator invoiceGenerator)
         {
             _dbContext = dbContext;
@@ -42,8 +44,7 @@ namespace BusinessBuddyApp.Services
                 _dbContext.SaveChanges();
 
                 var order = _dbContext.Orders.Find(orderId);
-                var htmlString = _invoiceGenerator.GetHTMLString(invoice);
-                _invoiceGenerator.GenerateInvoice(htmlString);
+                _invoiceGenerator.GenerateInvoice(invoice, directoryPath);
 
                 if (order != null)
                 {

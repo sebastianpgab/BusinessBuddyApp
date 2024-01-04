@@ -4,8 +4,6 @@ using BusinessBuddyApp.Models;
 using BusinessBuddyApp.Models.Validators;
 using BusinessBuddyApp.Services;
 using BusinessBuddyApp.Settings;
-using DinkToPdf.Contracts;
-using DinkToPdf;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -65,9 +63,7 @@ namespace BusinessBuddyApp
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IInvoiceGenerator, InvoiceGenerator>();
-            builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-            builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
             //Fluent Validations
             builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
