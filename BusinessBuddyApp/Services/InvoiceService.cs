@@ -8,8 +8,6 @@ namespace BusinessBuddyApp.Services
     {
         public Task<Invoice> Get(int invoiceId);
         public Task<Invoice> Create(Invoice invoice, int orderId);
-
-
     }
     public class InvoiceService : IInvoiceService
     {
@@ -40,18 +38,21 @@ namespace BusinessBuddyApp.Services
                 invoice.InvoiceNumber = invoiceNumber;
                 invoice.DueDate = DateTime.Now.AddDays(14);
 
-                _dbContext.Invoices.Add(invoice);
-                _dbContext.SaveChanges();
-
+               
                 var order = _dbContext.Orders.Find(orderId);
-                _invoiceGenerator.GenerateInvoice(invoice, directoryPath);
 
                 if (order != null)
                 {
+                    _dbContext.Invoices.Add(invoice);
+                    _dbContext.SaveChanges();
+
                     order.InvoiceId = invoice.Id;
+
                     await _dbContext.SaveChangesAsync();
+
+                    _invoiceGenerator.GenerateInvoice(invoice, directoryPath);
+                    return invoice;
                 }
-                return invoice;
             }
             throw new NotFoundException(nameof(invoice));
         }

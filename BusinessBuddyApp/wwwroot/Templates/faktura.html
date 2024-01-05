@@ -6,29 +6,34 @@
 </head>
 <body>
     <div class="invoice-box">
-        <div class="header-section">
-            <h1>Faktura</h1>
+        <div class="header-section" style="text-align:center">
+            <h1>Faktura nr.  [NumerFaktury]</h1>
         </div>
 
         <div class="details-section">
-            <label>Numer Faktury: [NumerFaktury]</label>
-            <label>Data Faktury: [DataFaktury]</label>
-            <label>Termin Płatności: [TerminPlatnosci]</label>
-            <label>Status płatność: [StatusPlatnosci]</label>
+            <h3>Nabywca</h3>
+            <p><label>Imie: [ImieNabywcy]</label></p>
+            <p><label>Nazwisko: [NazwiskoNabywcy]</label></p>
+            <p><label>Numer Tel.: [NumerTelNabywcy]</label></p>
+            <p><label>Email: [EmailNabywcy]</label></p>
         </div>
+
+
 
         <table class="table">
             <thead>
                 <tr>
-                    <th>Imie Klienta</th>
-
+                    <th>Zamowienie ID</th>
+                    <!--<th> Produkt </th>
+                    <th>Cena </th> -->
                 </tr>
             </thead>
             <tbody>
                 <!-- Wiersze z produktami/usługami -->
                 <tr>
-                    <td>[ImieKlienta]</td>
-\
+                    <td>[ZamowienieID]</td>
+                    <!--<td>[NazwaProduktu]</td> -->
+                    <td></td>
                 </tr>
                 <!-- Powtórz wiersze dla każdego produktu/usługi -->
             </tbody>
