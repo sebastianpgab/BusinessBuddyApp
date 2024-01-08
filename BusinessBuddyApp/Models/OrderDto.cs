@@ -6,9 +6,10 @@ namespace BusinessBuddyApp.Models
     {
         public int Id { get; set; }
         public int? OrderDetailId { get; set; }
-        public DateTime OrderDate { get; set; } = DateTime.Now;
+        //OrderDetail
+        public DateTime OrderDate { get; set; }
         public DateTime? CompletionDate { get; set; }
-        public OrderStatus Status { get; set; } = OrderStatus.InProgress;
+        public OrderStatus Status { get; set; }
         public string Notes { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
         public double FinalAmount { get; set; }
@@ -17,9 +18,7 @@ namespace BusinessBuddyApp.Models
         public double TotalAmount { get; set; } = 0;
         public int Quantity { get; set; }
         public int ProductId { get; set; }
-
         //Product 
-
         public string ProductType { get; set; }
         public double Price { get; set; }
         public string Color { get; set; }
@@ -31,6 +30,12 @@ namespace BusinessBuddyApp.Models
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public virtual Address Address { get; set; }
+        //Address
+        public string Street { get; set; }
+        public string? BuildingNumber { get; set; }
+        public string? ApartmentNumber { get; set; } // Optional
+        public string PostalCode { get; set; }
+        public string City { get; set; }
         //Invoice
         public string InvoiceNumber { get; set; }
         public DateTime InvoiceDate { get; set; }

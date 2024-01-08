@@ -24,22 +24,22 @@ public class InvoiceGenerator : IInvoiceGenerator
     }
     public string GetHTMLString(Invoice invoice)
     {
+        var order =  _dbContext.Orders.FirstOrDefault(p => p.InvoiceId == invoice.Id);
 
-
-
-        if(true)
+        if(order != null)
         {
+            var orderDto = GetOrderWithClient(order.Id);
 
             string htmlContent = File.ReadAllText("wwwroot/templates/faktura.html");
 
-           /* htmlContent = htmlContent.Replace("[ImieNabywcy]", result.Client.FirstName);
-            htmlContent = htmlContent.Replace("[NazwiskoNabywcy]", result.Client.LastName);
-            htmlContent = htmlContent.Replace("[NumerTelNabywcy]", result.Client.PhoneNumber);
-            htmlContent = htmlContent.Replace("[EmailNabywcy]", result.Client.Email);
-            htmlContent = htmlContent.Replace("[ZamowienieID]", result.Id.ToString());*/
+             htmlContent = htmlContent.Replace("[ImieNabywcy]", orderDto.FirstName);
+             htmlContent = htmlContent.Replace("[NazwiskoNabywcy]", orderDto.LastName);
+             htmlContent = htmlContent.Replace("[NumerTelNabywcy]", orderDto.PhoneNumber);
+             htmlContent = htmlContent.Replace("[EmailNabywcy]", orderDto.Email);
+             htmlContent = htmlContent.Replace("[ZamowienieID]", orderDto.Id.ToString());
 
             return htmlContent;
-        }
+        }    
 
         throw new NotFoundException($"Invoice with was not found.");
     }
@@ -61,12 +61,19 @@ public class InvoiceGenerator : IInvoiceGenerator
 
     public OrderDto GetOrderWithClient(int orderId)
     {
-        var order = _dbContext.Orders.Include(c => c.Client);
+        var order = _dbContext.Orders
+            .Include(o => o.OrderDetail)
+                .ThenInclude(od => od.OrderProducts)
+                    .ThenInclude(op => op.Product)
+            .Include(o => o.OrderDetail)
+                .ThenInclude(od => od.DeliveryAddress)
+            .Include(o => o.Client)
+            .Include(o => o.Invoice);
 
 
         if (order == null)
         {
-            return null;
+            throw new NotFoundException($"Order not found");
         }
 
         var orderDto = _mapper.Map<OrderDto>(order);
