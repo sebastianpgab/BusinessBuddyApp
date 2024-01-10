@@ -50,7 +50,7 @@ namespace BusinessBuddyApp.Services
 
                     await _dbContext.SaveChangesAsync();
 
-                    _invoiceGenerator.GenerateInvoice(invoice, directoryPath);
+                    await _invoiceGenerator.GenerateInvoice(invoice, directoryPath);
                     return invoice;
                 }
             }

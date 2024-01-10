@@ -4,39 +4,74 @@ using System.Text;
 using SelectPdf;
 using Microsoft.EntityFrameworkCore;
 using BusinessBuddyApp.Exceptions;
-using AutoMapper;
-using BusinessBuddyApp.Models; // Dodaj tę przestrzeń nazw
+using BusinessBuddyApp.Models;
 
 public interface IInvoiceGenerator
 {
-    void GenerateInvoice(Invoice invoice, string directoryPath);
-    string GetHTMLString(Invoice invoice);
+    Task GenerateInvoice(Invoice invoice, string directoryPath);
+    Task<string> GetHTMLString(Invoice invoice);
 }
 
 public class InvoiceGenerator : IInvoiceGenerator
 {
     private readonly BusinessBudyDbContext _dbContext;
-    private readonly IMapper _mapper;
-    public InvoiceGenerator(BusinessBudyDbContext dbContext, IMapper mapper)
+    public InvoiceGenerator(BusinessBudyDbContext dbContext)
     {
         _dbContext = dbContext;
-        _mapper = _mapper; 
     }
-    public string GetHTMLString(Invoice invoice)
+    public async Task<string> GetHTMLString(Invoice invoice)
     {
         var order =  _dbContext.Orders.FirstOrDefault(p => p.InvoiceId == invoice.Id);
 
         if(order != null)
         {
-            var orderDto = GetOrderWithClient(order.Id);
+            var clientOrder = await GetOrderWithClient(order.Id);
 
             string htmlContent = File.ReadAllText("wwwroot/templates/faktura.html");
 
-             htmlContent = htmlContent.Replace("[ImieNabywcy]", orderDto.FirstName);
-             htmlContent = htmlContent.Replace("[NazwiskoNabywcy]", orderDto.LastName);
-             htmlContent = htmlContent.Replace("[NumerTelNabywcy]", orderDto.PhoneNumber);
-             htmlContent = htmlContent.Replace("[EmailNabywcy]", orderDto.Email);
-             htmlContent = htmlContent.Replace("[ZamowienieID]", orderDto.Id.ToString());
+
+            //dane klineta
+            htmlContent = htmlContent.Replace("[ImieNabywcy]", clientOrder.Client.FirstName);
+             htmlContent = htmlContent.Replace("[NazwiskoNabywcy]", clientOrder.Client.LastName);
+             htmlContent = htmlContent.Replace("[NumerTelNabywcy]", clientOrder.Client.PhoneNumber);
+             htmlContent = htmlContent.Replace("[EmailNabywcy]", clientOrder.Client.Email);
+            //adres
+            htmlContent = htmlContent.Replace("[MiastoNabywcy]", clientOrder.Client.Address.City);
+            htmlContent = htmlContent.Replace("NumerMieszkaniaNabywcy]", clientOrder.Client.Address.ApartmentNumber);
+            htmlContent = htmlContent.Replace("[NumerDomuNabywcy]", clientOrder.Client.Address.BuildingNumber);
+            htmlContent = htmlContent.Replace("[KodPocztowyNabywcy]", clientOrder.Client.Address.PostalCode);
+            htmlContent = htmlContent.Replace("[UlicaNabywcy]", clientOrder.Client.Address.Street);
+            //faktura
+            htmlContent = htmlContent.Replace("[NumerFaktury]", clientOrder.Invoice.InvoiceNumber);
+            htmlContent = htmlContent.Replace("[MaxPlatnoscData]", (clientOrder.Invoice.DueDate).ToString("yyyy-MM-dd"));
+            htmlContent = htmlContent.Replace("[CzyOplaconaFaktura]", clientOrder.Invoice.IsPaid.ToString());
+            htmlContent = htmlContent.Replace("[DataWystawieniaFaktury]", clientOrder.Invoice.InvoiceDate.ToString("yyyy-MM-dd"));
+            //szczegoly zamowienia
+            htmlContent = htmlContent.Replace("[StatusZamowienia]", clientOrder.OrderDetail.Status.ToString());
+            htmlContent = htmlContent.Replace("[FinalnaKwota]", clientOrder.OrderDetail.FinalAmount.ToString());
+            htmlContent = htmlContent.Replace("[NotatkiDoZamowienia]", clientOrder.OrderDetail.Notes);
+            htmlContent = htmlContent.Replace("[MetodaPlatnosci]", clientOrder.OrderDetail.PaymentMethod.ToString());
+            htmlContent = htmlContent.Replace("[ZakonczenieZamowienia]", clientOrder.OrderDetail.CompletionDate?.ToString("yyyy-MM-dd") ?? "brak daty");
+            htmlContent = htmlContent.Replace("[DataZlozeniaZamowienia]", clientOrder.OrderDetail.OrderDate.ToString("yyyy-MM-dd"));
+            //zamowione produkty
+            int totalQuantity = clientOrder.OrderDetail.OrderProducts.Sum(p => p.Quantity);
+            htmlContent = htmlContent.Replace("[IloscZamowieniaProduktu]", totalQuantity.ToString());
+
+            var totalAmount = clientOrder.OrderDetail.OrderProducts.Sum(p => p.TotalAmount);
+            htmlContent = htmlContent.Replace("[KosztDanegoTypuTowaru]", totalAmount.ToString("C")); // Formatowanie jako wartość walutowa
+
+            //produkty
+            var productTypes = clientOrder.OrderDetail.OrderProducts
+                    .Select(p => p.Product.ProductType)
+                    .ToList();
+
+            string productTypesString = String.Join(", ", productTypes);
+            htmlContent = htmlContent.Replace("[TypProduktu]", productTypesString);
+
+
+
+
+
 
             return htmlContent;
         }    
@@ -44,9 +79,9 @@ public class InvoiceGenerator : IInvoiceGenerator
         throw new NotFoundException($"Invoice with was not found.");
     }
 
-    public void GenerateInvoice(Invoice invoice, string directoryPath)
+    public async Task GenerateInvoice(Invoice invoice, string directoryPath)
     {
-        string htmlString = GetHTMLString(invoice);
+        string htmlString = await GetHTMLString(invoice);
 
         HtmlToPdf converter = new HtmlToPdf();
         converter.Options.PdfPageSize = PdfPageSize.A4;
@@ -59,26 +94,24 @@ public class InvoiceGenerator : IInvoiceGenerator
         doc.Close();
     }
 
-    public OrderDto GetOrderWithClient(int orderId)
+    public async Task<Order> GetOrderWithClient(int orderId)
     {
-        var order = _dbContext.Orders
-            .Include(o => o.OrderDetail)
-                .ThenInclude(od => od.OrderProducts)
-                    .ThenInclude(op => op.Product)
-            .Include(o => o.OrderDetail)
-                .ThenInclude(od => od.DeliveryAddress)
-            .Include(o => o.Client)
-            .Include(o => o.Invoice);
-
+        var order =  await _dbContext.Orders
+               .Include(o => o.OrderDetail)
+                   .ThenInclude(od => od.OrderProducts)
+                       .ThenInclude(op => op.Product)
+               .Include(o => o.OrderDetail)
+                   .ThenInclude(od => od.DeliveryAddress)
+               .Include(o => o.Client)
+               .Include(o => o.Invoice)
+               .FirstOrDefaultAsync(p => p.Id == orderId);
 
         if (order == null)
         {
             throw new NotFoundException($"Order not found");
         }
 
-        var orderDto = _mapper.Map<OrderDto>(order);
-
-        return orderDto;
+        return order;
     }
 
 }
