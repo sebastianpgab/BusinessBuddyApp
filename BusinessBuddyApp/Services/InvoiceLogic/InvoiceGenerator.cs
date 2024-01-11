@@ -61,12 +61,15 @@ public class InvoiceGenerator : IInvoiceGenerator
             htmlContent = htmlContent.Replace("[KosztDanegoTypuTowaru]", totalAmount.ToString("C")); // Formatowanie jako wartość walutowa
 
             //produkty
-            var productTypes = clientOrder.OrderDetail.OrderProducts
-                    .Select(p => p.Product.ProductType)
-                    .ToList();
+            var products = clientOrder.OrderDetail.OrderProducts.ToList();
 
-            string productTypesString = String.Join(", ", productTypes);
-            htmlContent = htmlContent.Replace("[TypProduktu]", productTypesString);
+            var productRows = new StringBuilder();
+            foreach (var product in products)
+            {
+                productRows.AppendLine($"<tr><td>{product.Product.ProductType}</td><td>{product.Quantity}</td><td>{product.Product.Price} zł</td></tr>");
+            }
+
+            htmlContent = htmlContent.Replace("<!--Produkty-->", productRows.ToString());
 
 
 

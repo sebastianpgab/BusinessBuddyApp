@@ -1,47 +1,79 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Faktura</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
 
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background: #fff;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f8f8;
+        }
+    </style>
 </head>
 <body>
-    <div class="invoice-box">
-        <div class="header-section" style="text-align:center">
-            <h1>Faktura nr.  [NumerFaktury]</h1>
-        </div>
+    <div class="container">
+        <h1>Faktura</h1>
+        <p>Numer Faktury: [NumerFaktury]</p>
+        <p>Data Wystawienia: [DataWystawieniaFaktury]</p>
+        <p>Termin Płatności: [MaxPlatnoscData]</p>
+        <p>Status Płatności: [CzyOplaconaFaktura]</p>
 
-        <div class="details-section">
-            <h3>Nabywca</h3>
-            <p><label>Imie: [ImieNabywcy]</label></p>
-            <p><label>Nazwisko: [NazwiskoNabywcy]</label></p>
-            <p><label>Numer Tel.: [NumerTelNabywcy]</label></p>
-            <p><label>Email: [EmailNabywcy]</label></p>
-        </div>
+        <h2>Dane Nabywcy</h2>
+        <p>Imię: [ImieNabywcy]</p>
+        <p>Nazwisko: [NazwiskoNabywcy]</p>
+        <p>Numer Telefonu: [NumerTelNabywcy]</p>
+        <p>Email: [EmailNabywcy]</p>
+        <p>Adres: [UlicaNabywcy] [NumerDomuNabywcy]/[NumerMieszkaniaNabywcy], [KodPocztowyNabywcy] [MiastoNabywcy]</p>
 
+        <h2>Szczegóły Zamówienia</h2>
+        <p>Status Zamówienia: [StatusZamowienia]</p>
+        <p>Metoda Płatności: [MetodaPlatnosci]</p>
+        <p>Data Złożenia Zamówienia: [DataZlozeniaZamowienia]</p>
+        <p>Data Zakończenia Zamówienia: [ZakonczenieZamowienia]</p>
+        <p>Notatki do Zamówienia: [NotatkiDoZamowienia]</p>
+        <p>Łączna Kwota: [KosztDanegoTypuTowaru]</p>
 
-
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Zamowienie ID</th>
-                    <!--<th> Produkt </th>
-                    <th>Cena </th> -->
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Wiersze z produktami/usługami -->
-                <tr>
-                    <td>[ZamowienieID]</td>
-                    <!--<td>[NazwaProduktu]</td> -->
-                    <td></td>
-                </tr>
-                <!-- Powtórz wiersze dla każdego produktu/usługi -->
-            </tbody>
+        <h2>Zamówione Produkty</h2>
+        <table>
+            <tr>
+                <th>Typ Produktu</th>
+                <th>Ilość zamówienia</th>
+                <th>Cena</th>
+            </tr>
+            <!--Produkty-->
         </table>
-
-        <div class="footer-section">
-            <p>Dziękujemy za skorzystanie z naszych usług!</p>
-        </div>
     </div>
 </body>
 </html>
