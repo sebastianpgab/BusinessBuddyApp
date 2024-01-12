@@ -19,8 +19,22 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        h1, h2 {
+        .invoice_container {
+            display: flex; /* Ustawienie Flexbox dla kontenera */
+            justify-content: space-between;
+        }
+
+        .client_container {
+            display: flex
+        }
+
+        .details_container {
+            display: flex
+        }
+
+        h1 {
             color: #333;
+            text-align: center;
         }
 
         table {
@@ -43,37 +57,48 @@
     </style>
 </head>
 <body>
+    <h1>Faktura</h1>
     <div class="container">
-        <h1>Faktura</h1>
-        <p>Numer Faktury: [NumerFaktury]</p>
-        <p>Data Wystawienia: [DataWystawieniaFaktury]</p>
-        <p>Termin Płatności: [MaxPlatnoscData]</p>
-        <p>Status Płatności: [CzyOplaconaFaktura]</p>
 
-        <h2>Dane Nabywcy</h2>
-        <p>Imię: [ImieNabywcy]</p>
-        <p>Nazwisko: [NazwiskoNabywcy]</p>
-        <p>Numer Telefonu: [NumerTelNabywcy]</p>
-        <p>Email: [EmailNabywcy]</p>
-        <p>Adres: [UlicaNabywcy] [NumerDomuNabywcy]/[NumerMieszkaniaNabywcy], [KodPocztowyNabywcy] [MiastoNabywcy]</p>
+        <div class="invoice_container">
+            <div>
+                <h2>Dane Faktury</h2>
+                <p>Numer Faktury: [NumerFaktury]</p>
+                <p>Data Wystawienia: [DataWystawieniaFaktury]</p>
+                <p>Termin Płatności: [MaxPlatnoscData]</p>
+                <p>Status Płatności: [CzyOplaconaFaktura]</p>
+            </div>
+            <div>
+                <h2>Dane Nabywcy</h2>
+                <p>Imię: [ImieNabywcy]</p>
+                <p>Nazwisko: [NazwiskoNabywcy]</p>
+                <p>Numer Telefonu: [NumerTelNabywcy]</p>
+                <p>Email: [EmailNabywcy]</p>
+                <p>Adres: [UlicaNabywcy] [NumerDomuNabywcy] [NumerMieszkaniaNabywcy] , [KodPocztowyNabywcy] [MiastoNabywcy]</p>
+            </div>
+        </div>
+        <div>
+            <h2>Szczegóły Zamówienia</h2>
+            <p>Status Zamówienia: [StatusZamowienia]</p>
+            <p>Metoda Płatności: [MetodaPlatnosci]</p>
+            <p>Data Złożenia Zamówienia: [DataZlozeniaZamowienia]</p>
+            <p>Data Zakończenia Zamówienia: [ZakonczenieZamowienia]</p>
+            <p>Notatki do Zamówienia: [NotatkiDoZamowienia]</p>
+        </div>
 
-        <h2>Szczegóły Zamówienia</h2>
-        <p>Status Zamówienia: [StatusZamowienia]</p>
-        <p>Metoda Płatności: [MetodaPlatnosci]</p>
-        <p>Data Złożenia Zamówienia: [DataZlozeniaZamowienia]</p>
-        <p>Data Zakończenia Zamówienia: [ZakonczenieZamowienia]</p>
-        <p>Notatki do Zamówienia: [NotatkiDoZamowienia]</p>
-        <p>Łączna Kwota: [KosztDanegoTypuTowaru]</p>
-
-        <h2>Zamówione Produkty</h2>
-        <table>
-            <tr>
-                <th>Typ Produktu</th>
-                <th>Ilość zamówienia</th>
-                <th>Cena</th>
-            </tr>
-            <!--Produkty-->
-        </table>
+        <div>
+            <h2>Zamówione Produkty</h2>
+            <table>
+                <tr>
+                    <th>Typ Produktu</th>
+                    <th>Ilość zamówienia</th>
+                    <th>Cena za sztukę</th>
+                    <th>Cena za dany towar</th>
+                </tr>
+                <!--Produkty-->
+            </table>
+            <h3>Łączna Kwota: [KosztDanegoTypuTowaru]</h3>
+        </div>
     </div>
 </body>
 </html>
