@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Faktura</title>
+    <title>Invoice</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,14 +22,6 @@
         .invoice_container {
             display: flex; /* Ustawienie Flexbox dla kontenera */
             justify-content: space-between;
-        }
-
-        .client_container {
-            display: flex
-        }
-
-        .details_container {
-            display: flex
         }
 
         h1 {
@@ -57,47 +49,47 @@
     </style>
 </head>
 <body>
-    <h1>Faktura</h1>
+    <h1>Invoice</h1>
     <div class="container">
 
         <div class="invoice_container">
             <div>
-                <h2>Dane Faktury</h2>
-                <p>Numer Faktury: [NumerFaktury]</p>
-                <p>Data Wystawienia: [DataWystawieniaFaktury]</p>
-                <p>Termin Płatności: [MaxPlatnoscData]</p>
-                <p>Status Płatności: [CzyOplaconaFaktura]</p>
+                <h2>Invoice Details</h2>
+                <p>Invoice Number: [InvoiceNumber]</p>
+                <p>Issue Date: [InvoiceDate]</p>
+                <p>Due Date: [DueDate]</p>
+                <p>Payment Status: [IsInvoicePaid]</p>
             </div>
             <div>
-                <h2>Dane Nabywcy</h2>
-                <p>Imię: [ImieNabywcy]</p>
-                <p>Nazwisko: [NazwiskoNabywcy]</p>
-                <p>Numer Telefonu: [NumerTelNabywcy]</p>
-                <p>Email: [EmailNabywcy]</p>
-                <p>Adres: [UlicaNabywcy] [NumerDomuNabywcy] [NumerMieszkaniaNabywcy] , [KodPocztowyNabywcy] [MiastoNabywcy]</p>
+                <h2>Buyer Details</h2>
+                <p>First Name: [FirstNameBuyer]</p>
+                <p>Last Name: [LastNameBuyer]</p>
+                <p>Phone Number: [PhoneNumberBuyer]</p>
+                <p>Email: [EmailBuyer]</p>
+                <p>Address: [StreetBuyer] [BuildingNumberBuyer]</p>
             </div>
         </div>
         <div>
-            <h2>Szczegóły Zamówienia</h2>
-            <p>Status Zamówienia: [StatusZamowienia]</p>
-            <p>Metoda Płatności: [MetodaPlatnosci]</p>
-            <p>Data Złożenia Zamówienia: [DataZlozeniaZamowienia]</p>
-            <p>Data Zakończenia Zamówienia: [ZakonczenieZamowienia]</p>
-            <p>Notatki do Zamówienia: [NotatkiDoZamowienia]</p>
+            <h2>Order Details</h2>
+            <p>Order Status: [OrderStatus]</p>
+            <p>Payment Method: [PaymentMethod]</p>
+            <p>Order Date: [OrderDate]</p>
+            <p>Order Completion Date: [OrderCompletionDate]</p>
+            <p>Order Notes: [OrderNotes]</p>
         </div>
 
         <div>
-            <h2>Zamówione Produkty</h2>
+            <h2>Ordered Products</h2>
             <table>
                 <tr>
-                    <th>Typ Produktu</th>
-                    <th>Ilość zamówienia</th>
-                    <th>Cena za sztukę</th>
-                    <th>Cena za dany towar</th>
+                    <th>Product Type</th>
+                    <th>Order Quantity</th>
+                    <th>Price per Unit</th>
+                    <th>Cost for Given Product</th>
                 </tr>
-                <!--Produkty-->
+                <!--Products-->
             </table>
-            <h3>Łączna Kwota: [KosztDanegoTypuTowaru]</h3>
+            <h3>Total Amount: [CostPerItemType]</h3>
         </div>
     </div>
 </body>

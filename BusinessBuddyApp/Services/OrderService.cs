@@ -16,9 +16,7 @@ namespace BusinessBuddyApp.Services
         private readonly BusinessBudyDbContext _dbContext;
         public OrderService(BusinessBudyDbContext dbContext)
         {
-
             _dbContext = dbContext;
-
         }
         public async Task<Order> Get(int clientId, int id)
         {
@@ -50,8 +48,6 @@ namespace BusinessBuddyApp.Services
                 return true;
             }
             throw new InvalidOperationException("Order is null");
-            
-
         }
 
     }

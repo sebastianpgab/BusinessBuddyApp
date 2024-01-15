@@ -27,5 +27,11 @@ namespace BusinessBuddyApp.Controllers
             string token = _accountService.GenerateJwt(loginUserDto);
             return Ok(token);
         }
+
+        [HttpGet("checkApi")]
+        public ActionResult CheckApi()
+        {
+            return Ok();
+        }
     }
 }

@@ -26,55 +26,45 @@ public class InvoiceGenerator : IInvoiceGenerator
         if(order != null)
         {
             var clientOrder = await GetOrderWithClient(order.Id);
-
             string htmlContent = File.ReadAllText("wwwroot/templates/faktura.html");
 
+            // Client data
+            htmlContent = htmlContent.Replace("[FirstNameBuyer]", clientOrder.Client.FirstName);
+            htmlContent = htmlContent.Replace("[LastNameBuyer]", clientOrder.Client.LastName);
+            htmlContent = htmlContent.Replace("[PhoneNumberBuyer]", clientOrder.Client.PhoneNumber);
+            htmlContent = htmlContent.Replace("[EmailBuyer]", clientOrder.Client.Email);
+            // Address
+            htmlContent = htmlContent.Replace("[CityBuyer]", clientOrder.Client.Address.City);
+            htmlContent = htmlContent.Replace("[ApartmentNumberBuyer]", clientOrder.Client.Address.ApartmentNumber);
+            htmlContent = htmlContent.Replace("[BuildingNumberBuyer]", clientOrder.Client.Address.BuildingNumber);
 
-            //dane klineta
-            htmlContent = htmlContent.Replace("[ImieNabywcy]", clientOrder.Client.FirstName);
-             htmlContent = htmlContent.Replace("[NazwiskoNabywcy]", clientOrder.Client.LastName);
-             htmlContent = htmlContent.Replace("[NumerTelNabywcy]", clientOrder.Client.PhoneNumber);
-             htmlContent = htmlContent.Replace("[EmailNabywcy]", clientOrder.Client.Email);
-            //adres
-            htmlContent = htmlContent.Replace("[MiastoNabywcy]", clientOrder.Client.Address.City);
-            htmlContent = htmlContent.Replace("NumerMieszkaniaNabywcy]", clientOrder.Client.Address.ApartmentNumber);
-            htmlContent = htmlContent.Replace("[NumerDomuNabywcy]", clientOrder.Client.Address.BuildingNumber);
-            htmlContent = htmlContent.Replace("[KodPocztowyNabywcy]", clientOrder.Client.Address.PostalCode);
-            htmlContent = htmlContent.Replace("[UlicaNabywcy]", clientOrder.Client.Address.Street);
-            //faktura
-            htmlContent = htmlContent.Replace("[NumerFaktury]", clientOrder.Invoice.InvoiceNumber);
-            htmlContent = htmlContent.Replace("[MaxPlatnoscData]", (clientOrder.Invoice.DueDate).ToString("yyyy-MM-dd"));
-            htmlContent = htmlContent.Replace("[CzyOplaconaFaktura]", clientOrder.Invoice.IsPaid.ToString());
-            htmlContent = htmlContent.Replace("[DataWystawieniaFaktury]", clientOrder.Invoice.InvoiceDate.ToString("yyyy-MM-dd"));
-            //szczegoly zamowienia
-            htmlContent = htmlContent.Replace("[StatusZamowienia]", clientOrder.OrderDetail.Status.ToString());
-            htmlContent = htmlContent.Replace("[FinalnaKwota]", clientOrder.OrderDetail.FinalAmount.ToString());
-            htmlContent = htmlContent.Replace("[NotatkiDoZamowienia]", clientOrder.OrderDetail.Notes);
-            htmlContent = htmlContent.Replace("[MetodaPlatnosci]", clientOrder.OrderDetail.PaymentMethod.ToString());
-            htmlContent = htmlContent.Replace("[ZakonczenieZamowienia]", clientOrder.OrderDetail.CompletionDate?.ToString("yyyy-MM-dd") ?? "brak daty");
-            htmlContent = htmlContent.Replace("[DataZlozeniaZamowienia]", clientOrder.OrderDetail.OrderDate.ToString("yyyy-MM-dd"));
-            //zamowione produkty
+            htmlContent = htmlContent.Replace("[PostalCodeBuyer]", clientOrder.Client.Address.PostalCode);
+            htmlContent = htmlContent.Replace("[StreetBuyer]", clientOrder.Client.Address.Street);
+            // Invoice
+            htmlContent = htmlContent.Replace("[InvoiceNumber]", clientOrder.Invoice.InvoiceNumber);
+            htmlContent = htmlContent.Replace("[DueDate]", (clientOrder.Invoice.DueDate).ToString("yyyy-MM-dd"));
+            htmlContent = htmlContent.Replace("[IsInvoicePaid]", clientOrder.Invoice.IsPaid.ToString());
+            htmlContent = htmlContent.Replace("[InvoiceDate]", clientOrder.Invoice.InvoiceDate.ToString("yyyy-MM-dd"));
+            // Order details
+            htmlContent = htmlContent.Replace("[OrderStatus]", clientOrder.OrderDetail.Status.ToString());
+            htmlContent = htmlContent.Replace("[FinalAmount]", clientOrder.OrderDetail.FinalAmount.ToString());
+            htmlContent = htmlContent.Replace("[OrderNotes]", clientOrder.OrderDetail.Notes);
+            htmlContent = htmlContent.Replace("[PaymentMethod]", clientOrder.OrderDetail.PaymentMethod.ToString());
+            htmlContent = htmlContent.Replace("[OrderCompletionDate]", clientOrder.OrderDetail.CompletionDate?.ToString("yyyy-MM-dd") ?? "no date");
+            htmlContent = htmlContent.Replace("[OrderDate]", clientOrder.OrderDetail.OrderDate.ToString("yyyy-MM-dd"));
+            // Ordered products
             int totalQuantity = clientOrder.OrderDetail.OrderProducts.Sum(p => p.Quantity);
-            htmlContent = htmlContent.Replace("[IloscZamowieniaProduktu]", totalQuantity.ToString());
-
+            htmlContent = htmlContent.Replace("[TotalProductQuantity]", totalQuantity.ToString());
             var totalAmount = clientOrder.OrderDetail.OrderProducts.Sum(p => p.TotalAmount);
-            htmlContent = htmlContent.Replace("[KosztDanegoTypuTowaru]", totalAmount.ToString("C")); // Formatowanie jako wartość walutowa
-
-            //produkty
+            htmlContent = htmlContent.Replace("[CostPerItemType]", totalAmount.ToString("C")); // Formatting as currency value
             var products = clientOrder.OrderDetail.OrderProducts.ToList();
 
             var productRows = new StringBuilder();
             foreach (var product in products)
             {
-                productRows.AppendLine($"<tr><td>{product.Product.ProductType}</td><td>{product.Quantity}</td><td>{product.Product.Price} zł</td></tr>");
+                productRows.AppendLine($"<tr><td>{product.Product.ProductType}</td><td>{product.Quantity}</td><td>{product.Product.Price} zł</td><td>{product.TotalAmount} zł</td></tr>");
             }
-
-            htmlContent = htmlContent.Replace("<!--Produkty-->", productRows.ToString());
-
-
-
-
-
+            htmlContent = htmlContent.Replace("<!--Products-->", productRows.ToString());
 
             return htmlContent;
         }    
