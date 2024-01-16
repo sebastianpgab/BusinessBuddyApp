@@ -9,6 +9,8 @@
         public string PostalCode { get; set; }
         public string City { get; set; }
         public int ClientId { get; set; }
+        public int? CompanyId { get; set; }
+        public virtual Company Company { get; set; }
         public virtual Client Client { get; set; }
         public int OrderDetailId { get; set; }
         public virtual OrderDetail OrderDetail { get; set; }

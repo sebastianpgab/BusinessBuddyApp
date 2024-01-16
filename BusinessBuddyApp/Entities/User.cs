@@ -11,5 +11,6 @@ namespace BusinessBuddyApp.Entities
         public string PasswordHash { get; set; }
         public int RoleId { get; set; } = 1;
         public virtual Role? Role { get; set; }
+        public int? IdCompany { get; set; }
     }
 }

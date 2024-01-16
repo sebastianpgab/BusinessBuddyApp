@@ -9,6 +9,6 @@
         //płatność do kiedy powinna zostać dokonana płatność
         public DateTime DueDate { get; set; }
         public bool IsPaid { get; set; } = false;
-
+        public int? IdCompany { get; set; }
     }
 }

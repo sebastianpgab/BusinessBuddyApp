@@ -11,6 +11,6 @@
         public Clothe Clothe { get; set; }
         public Mug Mug { get; set; }
         public Other Other { get; set; }
-
+        public int? IdCompany { get; set; }
     }
 }

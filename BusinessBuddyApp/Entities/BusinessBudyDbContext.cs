@@ -18,9 +18,11 @@ namespace BusinessBuddyApp.Entities
         public DbSet<Product> Products { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Company> Companies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Company>().HasOne(u => u.Address).WithOne(p => p.Company).HasForeignKey<Address>(a => a.CompanyId);
             modelBuilder.Entity<Client>().HasOne(u => u.Address).WithOne(p => p.Client).HasForeignKey<Address>(a => a.ClientId);
             modelBuilder.Entity<Order>().HasOne(u => u.Client).WithMany(p => p.Orders).HasForeignKey(a => a.ClientId);
             modelBuilder.Entity<Order>().HasOne(u => u.Invoice).WithOne();

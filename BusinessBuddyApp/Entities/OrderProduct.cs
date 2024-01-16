@@ -9,5 +9,6 @@
         public int OrderDetailId { get; set; }
         public virtual OrderDetail? OrderDetail { get; set; }
         public virtual Product? Product { get; set; }
+        public int? IdCompany { get; set; }
     }
 }

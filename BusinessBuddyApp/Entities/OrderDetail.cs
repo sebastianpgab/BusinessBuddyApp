@@ -28,5 +28,6 @@
         public int OrderId { get; set; }
         public virtual Order Order { get; set; }
         public virtual ICollection<OrderProduct> OrderProducts { get; set; }
+        public int? IdCompany { get; set; }
     }
 }
