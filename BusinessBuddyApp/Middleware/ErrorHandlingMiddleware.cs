@@ -16,6 +16,12 @@ namespace BusinessBuddyApp.Middleware
             {
                 await next.Invoke(context);
             }
+            catch (ForbidException forbidEx)
+            {
+                _logger.LogError(forbidEx.Message, forbidEx);
+                context.Response.StatusCode = 403;
+                await context.Response.WriteAsync("Access Denied: Check Permissions");
+            }
             catch (BadRequestException badRequestEx)
             {
                 _logger.LogError(badRequestEx.Message, badRequestEx);
