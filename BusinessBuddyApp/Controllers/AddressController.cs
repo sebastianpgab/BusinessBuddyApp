@@ -22,10 +22,10 @@ namespace BusinessBuddyApp.Controllers
             return Ok(addresses);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Address>> Get([FromRoute] int id)
+        [HttpGet("{clientId}")]
+        public async Task<ActionResult<Address>> Get([FromRoute] int clientId)
         {
-            var address = await _addressService.Get(id);
+            var address = await _addressService.Get(clientId);
             return Ok(address);
         }
 

@@ -9,7 +9,7 @@ namespace BusinessBuddyApp.Services
     public interface IAddressService
     {
         public ICollection<Address> GetAll();
-        public Task<Address> Get(int id);
+        public Task<Address> Get(int clientId);
         public Task<Address> Update(Address newAddress, int id);
         public void Create(AddressDto addressDto, int clientId);
 
@@ -24,19 +24,20 @@ namespace BusinessBuddyApp.Services
             _mapper = mapper;
 
         }
-        public ICollection<Address> GetAll() 
+        public ICollection<Address> GetAll()
         {
             var addresses = _dbContext.Addresses.ToList();
-            if (addresses is not null)
+            if (!addresses.Any())
             {
-                return addresses;
+                throw new NotFoundException("Addresses not found");
             }
-            throw new NotFoundException("Addresses not found");
+            return addresses;
         }
 
-        public async Task<Address> Get(int id)
+        public async Task<Address> Get(int clientId)
         {
-            var address = await _dbContext.Addresses.FirstOrDefaultAsync(p => p.Id == id);
+            var addresses = await _dbContext.Addresses.ToListAsync();
+            var address = await _dbContext.Addresses.FirstOrDefaultAsync(p => p.ClientId == clientId);
             if (address is not null)
             {
                 return address;

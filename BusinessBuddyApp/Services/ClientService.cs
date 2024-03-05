@@ -56,11 +56,11 @@ namespace BusinessBuddyApp.Services
             var clientToUpdate = await _dbContext.Clients.FirstOrDefaultAsync(p => p.Id == id);
             if (clientToUpdate is not null)
             {
-                if (client.FirstName is not null) { clientToUpdate.FirstName = client.FirstName;}
-                if (client.LastName is not null) { clientToUpdate.LastName = client.LastName; }
-                if (client.TaxNumber is not null) { clientToUpdate.TaxNumber = client.TaxNumber; }
-                if (client.PhoneNumber is not null) { clientToUpdate.Email = client.Email; }
-                if (client.Email is not null) { clientToUpdate.Email = client.Email; }
+                if (client.FirstName is not null && client.FirstName != "") { clientToUpdate.FirstName = client.FirstName;}
+                if (client.LastName is not null && client.LastName != "") { clientToUpdate.LastName = client.LastName; }
+                if (client.TaxNumber is not null && client.TaxNumber != "") { clientToUpdate.TaxNumber = client.TaxNumber; }
+                if (client.PhoneNumber is not null && client.PhoneNumber != "") { clientToUpdate.PhoneNumber = client.PhoneNumber; }
+                if (client.Email is not null && client.Email != "") { clientToUpdate.Email = client.Email; }
 
                 _dbContext.SaveChanges();
                 return clientToUpdate;
