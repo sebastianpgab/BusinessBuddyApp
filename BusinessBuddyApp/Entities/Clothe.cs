@@ -8,6 +8,5 @@
         public string Brand { get; set; }
         public string Style { get; set; }
         public int ProductId { get; set; }
-        public int? IdCompany { get; set; }
     }
 }

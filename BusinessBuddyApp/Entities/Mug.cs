@@ -8,6 +8,5 @@
         public bool? IsMicrowaveSafe { get; set; }
         public bool? IsDishwasherSafe { get; set; }
         public int ProductId { get; set; }
-        public int? IdCompany { get; set; }
     }
 }
