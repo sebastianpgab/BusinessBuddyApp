@@ -4,6 +4,7 @@ using BusinessBuddyApp.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessBuddyApp.Migrations
 {
     [DbContext(typeof(BusinessBudyDbContext))]
-    partial class BusinessBudyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240320215318_delete_Mug_Clothe_Other_Entities")]
+    partial class delete_Mug_Clothe_Other_Entities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -287,8 +289,7 @@ namespace BusinessBuddyApp.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");

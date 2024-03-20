@@ -22,7 +22,7 @@ namespace BusinessBuddyApp.Services
 
         public async Task<IEnumerable<Product>> GetAll()
         {
-            var products = await _dbContext.Products.Include(p => p.Clothe).Include(w => w.Mug).Include(c => c.Other).ToListAsync();
+            var products = await _dbContext.Products.ToListAsync();
             if (products.Any())
             {
                 return products;
@@ -33,9 +33,6 @@ namespace BusinessBuddyApp.Services
         public async Task<Product> Get(int id)
         {
             var product = await _dbContext.Products
-                .Include(p => p.Clothe)
-                .Include(p => p.Mug)
-                .Include(p => p.Other)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (product is not null)
@@ -50,49 +47,15 @@ namespace BusinessBuddyApp.Services
         public async Task<Product> Update(Product updatedProduct, int id)
         {
             var product = await _dbContext.Products
-                .Include(p => p.Mug)
-                .Include(p => p.Clothe)
-                .Include(p => p.Other)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (product == null) throw new Exception($"Product with ID {id} not found.");
+            if (product.Description.Length > 100) throw new ArgumentOutOfRangeException("Description", "The product description cannot exceed 100 characters.");
 
             product.ProductType = updatedProduct.ProductType != product.ProductType ? updatedProduct.ProductType : product.ProductType;
+            product.Description = updatedProduct.Description != product.Description ? updatedProduct.Description : product.Description;
             product.Price = updatedProduct.Price != product.Price ? product.Price : updatedProduct.Price;
             product.StockQuantity = updatedProduct.StockQuantity != product.StockQuantity ? updatedProduct.StockQuantity : product.StockQuantity;
-
-            switch (product.ProductType)
-            {
-                case "Mug":
-                    if (product.Mug is not null)
-                    {
-                        product.Mug.Material = updatedProduct.Mug.Material ?? product.Mug.Material;
-                        product.Mug.Capacity = updatedProduct.Mug.Capacity ?? product.Mug.Capacity;
-                        product.Mug.IsMicrowaveSafe = updatedProduct.Mug.IsMicrowaveSafe ?? product.Mug.IsMicrowaveSafe;
-                        product.Mug.IsDishwasherSafe = updatedProduct.Mug.IsDishwasherSafe ?? product.Mug.IsDishwasherSafe;
-                    }
-                    break;
-
-                case "Clothe":
-                    if (product.Clothe is not null)
-                    {
-                        product.Clothe.Size = updatedProduct.Clothe.Size ?? product.Clothe.Size;
-                        product.Clothe.Gender = updatedProduct.Clothe.Gender ?? product.Clothe.Gender;
-                        product.Clothe.Brand = updatedProduct.Clothe.Brand ?? product.Clothe.Brand;
-                        product.Clothe.Style = updatedProduct.Clothe.Style ?? product.Clothe.Style;
-                    }
-                    break;
-
-                case "Other":
-                    if (product.Other is not null)
-                    {
-                        product.Other.Description = updatedProduct.Other.Description ?? product.Other.Description;
-                    }
-                    break;
-
-                default:
-                    throw new Exception($"Unknown product type: {updatedProduct.ProductType}.");
-            }
 
             await _dbContext.SaveChangesAsync();
             return updatedProduct;
@@ -102,9 +65,16 @@ namespace BusinessBuddyApp.Services
         {
             if (product is not null)
             {
-                _dbContext.Add(product);
-                _dbContext.SaveChanges();
-                return true;
+                if(product.Description.Length > 100)
+                {
+                    _dbContext.Add(product);
+                    _dbContext.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException("Description", "The product description cannot exceed 100 characters.");
+                }
             }
 
             throw new ArgumentNullException("Product" + nameof(product) + "is null");

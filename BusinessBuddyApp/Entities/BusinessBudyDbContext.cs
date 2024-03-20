@@ -8,13 +8,10 @@ namespace BusinessBuddyApp.Entities
 
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Client> Clients { get; set; }
-        public DbSet<Clothe> Clothes { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
-        public DbSet<Mug> Mugs { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderProduct> OrderProducts { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
-        public DbSet<Other> Others { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
