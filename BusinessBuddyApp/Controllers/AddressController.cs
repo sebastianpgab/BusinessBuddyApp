@@ -37,9 +37,9 @@ namespace BusinessBuddyApp.Controllers
         }
 
         [HttpPost("{clientId}")]
-        public ActionResult Create([FromBody] AddressDto addressDto, [FromRoute] int clientId)
+        public async Task<ActionResult> Create([FromBody] AddressDto addressDto, [FromRoute] int clientId)
         {
-            _addressService.Create(addressDto, clientId);
+            await _addressService.Create(addressDto, clientId);
             return Ok();
         }
 

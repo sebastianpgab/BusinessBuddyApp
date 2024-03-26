@@ -12,7 +12,13 @@ namespace BusinessBuddyApp
             CreateMap<RegisterUserDto, User>();
             CreateMap<AddressDto, Address>();
             CreateMap<ClientDto, Client>();
-            CreateMap<InvoiceDto, Invoice>();          
+            CreateMap<InvoiceDto, Invoice>();
+            CreateMap<OrderDto, Order>();
+            CreateMap<OrderDetailDto, OrderDetail>();
+            CreateMap<OrderProductDto, OrderProduct>();
+
+
+
         }
     }
 }

@@ -37,9 +37,9 @@ namespace BusinessBuddyApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create([FromBody] ClientDto clientDto)
+        public async Task<ActionResult> Create([FromBody] ClientDto clientDto)
         {
-            _clientService.Create(clientDto);
+            await _clientService.Create(clientDto);
             return Ok();
         }
 

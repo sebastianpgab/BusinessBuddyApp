@@ -8,7 +8,7 @@ namespace BusinessBuddyApp.Services
     {
         public Task<OrderDetail> Get(int id);
         public Task<IEnumerable<OrderDetail>> GetAll();
-        public bool Create(OrderDetail orderDetail, int orderId);
+        public Task Create(OrderDetail orderDetail, int orderId);
 
     }
 
@@ -40,7 +40,7 @@ namespace BusinessBuddyApp.Services
         }
 
 
-        public bool Create(OrderDetail orderDetail, int orderId)
+        public async Task Create(OrderDetail orderDetail, int orderId)
         {
             if(orderDetail != null)
             {
@@ -52,8 +52,7 @@ namespace BusinessBuddyApp.Services
                     _dbContext.SaveChanges();
 
                     order.OrderDetailId = orderDetail.Id;
-                    _dbContext.SaveChanges();
-                    return true;
+                    await _dbContext.SaveChangesAsync();
                 }
             }
             throw new InvalidOperationException("Failed to add OrderDetail.");

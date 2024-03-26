@@ -18,7 +18,7 @@ namespace BusinessBuddyApp.Services
         public PagedResult<Client> GetAll(ClientQuery clientQuery);
         public Client Get(int id);
         public Task<Client> Update(Client client, int id);
-        public void Create(ClientDto clientDto);
+        public Task Create(ClientDto clientDto);
 
     }
     public class ClientService : IClientService
@@ -68,11 +68,11 @@ namespace BusinessBuddyApp.Services
             throw new NotFoundException($"Client {id} not found");
         }
 
-        public void Create(ClientDto clientDto)
+        public async Task Create(ClientDto clientDto)
         {
             var clientMapped = _mapper.Map<Client>(clientDto);
             _dbContext.Add(clientMapped);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
 
         public PagedResult<Client> SearchClients(ClientQuery clientQuery)

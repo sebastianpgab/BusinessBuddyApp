@@ -11,7 +11,7 @@ namespace BusinessBuddyApp.Services
         public ICollection<Address> GetAll();
         public Task<Address> Get(int clientId);
         public Task<Address> Update(Address newAddress, int id);
-        public void Create(AddressDto addressDto, int clientId);
+        public Task Create(AddressDto addressDto, int clientId);
 
     }
     public class AddressService : IAddressService
@@ -61,7 +61,7 @@ namespace BusinessBuddyApp.Services
             throw new NotFoundException("Address not found");
         }
 
-        public void Create(AddressDto addressDto, int clientId)
+        public async Task Create(AddressDto addressDto, int clientId)
         {
             var client = _dbContext.Clients.FirstOrDefault(p => p.Id == clientId);
             if(client != null)
@@ -69,7 +69,7 @@ namespace BusinessBuddyApp.Services
                 addressDto.ClientId = clientId;
                 var addressMapped = _mapper.Map<Address>(addressDto);
                 _dbContext.Add(addressMapped);
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
             }
             throw new NotFoundException("Client not found");
         }

@@ -63,6 +63,7 @@ namespace BusinessBuddyApp
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IInvoiceGenerator, InvoiceGenerator>();
+            builder.Services.AddScoped<IPurchaseService, PurchaseService>();
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
             //Fluent Validations

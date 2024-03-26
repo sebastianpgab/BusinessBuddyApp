@@ -1,6 +1,6 @@
 ﻿using BusinessBuddyApp.Models;
+using BusinessBuddyApp.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography.X509Certificates;
 
 namespace BusinessBuddyApp.Controllers
 {
@@ -8,12 +8,18 @@ namespace BusinessBuddyApp.Controllers
     [ApiController]
     public class PurchaseController : ControllerBase
     {
-
+        private readonly IPurchaseService _purchaseService;
+        public PurchaseController(IPurchaseService purchaseService)
+        {
+            _purchaseService = purchaseService;
+        }
         [HttpPost]
         public async Task<IActionResult> CreatePurchase([FromBody] PurchaseDto purchase)
         {
-            
-            
+            await _purchaseService.CreatePurchase(purchase);
+            return Ok();
+
+
         }
     }
 }

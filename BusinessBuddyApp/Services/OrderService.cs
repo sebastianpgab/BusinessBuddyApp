@@ -1,13 +1,14 @@
 ﻿using BusinessBuddyApp.Entities;
 using BusinessBuddyApp.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 
 namespace BusinessBuddyApp.Services
 {
     public interface IOrderService
     {
         public Task<Order> Get(int clientId, int id);
-        public bool Create(Order order);
+        public Task Create(Order order);
         public Task<IEnumerable<Order>> GetAll(int clientId);
 
     }
@@ -39,15 +40,16 @@ namespace BusinessBuddyApp.Services
             throw new NotFoundException("Orders not found");
         }
 
-        public bool Create(Order order)
+        public async Task Create(Order order)
         {
+
             if(order != null)
             {
                 _dbContext.Orders.Add(order);
-                _dbContext.SaveChanges();
-                return true;
+                await _dbContext.SaveChangesAsync();
             }
-            throw new InvalidOperationException("Order is null");
+            throw new NotFoundException("Order not found");
+
         }
 
     }

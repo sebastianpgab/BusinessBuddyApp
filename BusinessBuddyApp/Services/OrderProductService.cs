@@ -11,7 +11,7 @@ namespace BusinessBuddyApp.Services
         public Task<IEnumerable<OrderProduct>> GetAll(int orderDetailId);
         public bool Update(OrderProduct orderProduct, int id);
         public bool Delete(int orderProductId);
-        public bool Create(OrderProduct orderProduct, int orderDetailId);
+        public Task Create(OrderProduct orderProduct, int orderDetailId);
     }
     public class OrderProductService : IOrderProductService
     {
@@ -101,7 +101,7 @@ namespace BusinessBuddyApp.Services
             return true;
         }
 
-        public bool Create(OrderProduct orderProduct, int orderDetailId)
+        public async Task Create(OrderProduct orderProduct, int orderDetailId)
         {
             if (orderProduct == null)
             {
@@ -119,7 +119,7 @@ namespace BusinessBuddyApp.Services
                     orderDetail.FinalAmount = orderProduct.TotalAmount + orderDetail.FinalAmount;
                     orderProduct.OrderDetailId = orderDetailId;
                     _dbContext.OrderProducts.Add(orderProduct);
-                    _dbContext.SaveChanges();
+                    await _dbContext.SaveChangesAsync();
                 }
                 else
                 {
@@ -130,7 +130,6 @@ namespace BusinessBuddyApp.Services
             {
                 throw new NotFoundException("OrderDetail with the given ID was not found.");
             }
-            return true;
         }
     }
 }
