@@ -8,7 +8,7 @@ namespace BusinessBuddyApp.Services
     public interface IOrderService
     {
         public Task<Order> Get(int clientId, int id);
-        public Task Create(Order order);
+        public Task<Order> Create(Order order);
         public Task<IEnumerable<Order>> GetAll(int clientId);
 
     }
@@ -40,13 +40,14 @@ namespace BusinessBuddyApp.Services
             throw new NotFoundException("Orders not found");
         }
 
-        public async Task Create(Order order)
+        public async Task<Order> Create(Order order)
         {
 
             if(order != null)
             {
                 _dbContext.Orders.Add(order);
                 await _dbContext.SaveChangesAsync();
+                return order;
             }
             throw new NotFoundException("Order not found");
 

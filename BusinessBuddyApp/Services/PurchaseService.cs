@@ -32,43 +32,48 @@ namespace BusinessBuddyApp.Services
         }
         public async Task CreatePurchase(PurchaseDto purchase)
         {
-           using (var transaction =  await _dbContext.Database.BeginTransactionAsync())
+            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+
+            try
             {
-                try
+                var client = await _clientService.Create(purchase.ClientDto);
+                var address = await _addressService.Create(purchase.AddressDto, client.Id);
+
+                if (client == null || address == null)
                 {
-                    await _clientService.Create(purchase.ClientDto);
-
-                    await _addressService.Create(purchase.AddressDto, purchase.ClientDto.Id);
-
-                    var orderServiceMapped = _mapper.Map<Order>(purchase.OrderDto);
-                    if(orderServiceMapped != null)
-                    {
-                        await _orderService.Create(orderServiceMapped);
-                    }
-
-                    var orderDetailMapped = _mapper.Map<OrderDetail>(purchase.OrderDetailDto);
-
-                    if(orderDetailMapped != null) 
-                    { 
-                        await _orderDetailService.Create(orderDetailMapped, purchase.OrderDto.Id); 
-                    }
-                    var orderProductMapped = _mapper.Map<OrderProduct>(purchase.OrderProductDto);
-
-                    if(orderProductMapped != null)
-                    {
-                        await _orderProductService.Create(orderProductMapped, purchase.OrderDetailDto.Id);
-                    }
-
-                    await transaction.CommitAsync();
-
+                    throw new Exception("Failed to create client or address.");
                 }
-                catch (Exception)
+
+                var orderServiceMapped = _mapper.Map<Order>(purchase.OrderDto);
+                if (orderServiceMapped == null)
                 {
-                    await transaction.RollbackAsync();
-                    throw; 
+                    throw new Exception("Failed to map order DTO.");
                 }
+                orderServiceMapped.ClientId = client.Id;
+                var order = await _orderService.Create(orderServiceMapped);
+
+                var orderDetailMapped = _mapper.Map<OrderDetail>(purchase.OrderDetailDto);
+                if (orderDetailMapped == null)
+                {
+                    throw new Exception("Failed to map order detail DTO.");
+                }
+                orderDetailMapped.DeliveryId = address.Id;
+                var orderDetail = await _orderDetailService.Create(orderDetailMapped, order.Id);
+
+                var orderProductMapped = _mapper.Map<OrderProduct>(purchase.OrderProductDto);
+                if (orderProductMapped == null)
+                {
+                    throw new Exception("Failed to map order product DTO.");
+                }
+                await _orderProductService.Create(orderProductMapped, orderDetail.Id);
+
+                await transaction.CommitAsync();
             }
-            
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
     }
 }

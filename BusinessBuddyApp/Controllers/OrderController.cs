@@ -27,7 +27,7 @@ namespace BusinessBuddyApp.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromRoute] Order order) 
+        public async Task<ActionResult> Create([FromRoute] Order order) 
         {
             await _orderService.Create(order);
             return Ok();
