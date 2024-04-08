@@ -60,7 +60,7 @@ namespace BusinessBuddyApp.Services
                 orderDetailMapped.DeliveryId = address.Id;
                 var orderDetail = await _orderDetailService.Create(orderDetailMapped, order.Id);
 
-                var orderProductMapped = _mapper.Map<OrderProduct>(purchase.OrderProductDto);
+                var orderProductMapped = _mapper.Map<List<OrderProduct>>(purchase.OrderProductDto);
                 if (orderProductMapped == null)
                 {
                     throw new Exception("Failed to map order product DTO.");

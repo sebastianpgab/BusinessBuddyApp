@@ -11,7 +11,7 @@ namespace BusinessBuddyApp.Services
         public Task<IEnumerable<OrderProduct>> GetAll(int orderDetailId);
         public bool Update(OrderProduct orderProduct, int id);
         public bool Delete(int orderProductId);
-        public Task<OrderProduct> Create(OrderProduct orderProduct, int orderDetailId);
+        public Task<List<OrderProduct>> Create(List<OrderProduct> orderProducts, int orderDetailId);
     }
     public class OrderProductService : IOrderProductService
     {
@@ -101,36 +101,55 @@ namespace BusinessBuddyApp.Services
             return true;
         }
 
-        public async Task<OrderProduct> Create(OrderProduct orderProduct, int orderDetailId)
+        public async Task<List<OrderProduct>> Create(List<OrderProduct> orderProducts, int orderDetailId)
         {
-            if (orderProduct == null)
+            if (orderProducts == null || !orderProducts.Any())
             {
-                throw new ArgumentNullException(nameof(orderProduct), "OrderProduct cannot be null.");
+                throw new ArgumentNullException(nameof(orderProducts), "OrderProduct cannot be null or empty.");
             }
-            var orderDetail = _dbContext.OrderDetails.Find(orderDetailId);
-            if(orderDetail != null)
-            {
-                var product = _dbContext.Products.FirstOrDefault(p => p.Id == orderProduct.ProductId);
 
-                if (product != null && product.StockQuantity >= orderProduct.Quantity)
-                {
-                    product.StockQuantity = product.StockQuantity - orderProduct.Quantity;
-                    orderProduct.TotalAmount = orderProduct.Quantity * product.Price;
-                    orderDetail.FinalAmount = orderProduct.TotalAmount + orderDetail.FinalAmount;
-                    orderProduct.OrderDetailId = orderDetailId;
-                    _dbContext.OrderProducts.Add(orderProduct);
-                    await _dbContext.SaveChangesAsync();
-                    return orderProduct;
-                }
-                else
-                {
-                    throw new NotFoundException("No product found, or you want more than is available");
-                }
-            }
-            else
+            var orderDetail = await _dbContext.OrderDetails.FindAsync(orderDetailId);
+            if (orderDetail == null)
             {
                 throw new NotFoundException("OrderDetail with the given ID was not found.");
             }
+
+            var productIds = orderProducts.Select(op => op.ProductId).Distinct().ToList();
+            var products = await _dbContext.Products.Where(product => productIds.Contains(product.Id)).ToListAsync();
+
+            if (products.Count != productIds.Count)
+            {
+                throw new NotFoundException("One or more products not found.");
+            }
+
+            List<OrderProduct> addedOrderProducts = new List<OrderProduct>();
+
+            foreach (var orderProduct in orderProducts)
+            {
+                var product = products.FirstOrDefault(p => p.Id == orderProduct.ProductId);
+                if (product == null)
+                {
+                    continue;
+                }
+
+                if (product.StockQuantity < orderProduct.Quantity)
+                {
+                    throw new InvalidOperationException($"Not enough stock for product ID {orderProduct.ProductId}.");
+                }
+
+                product.StockQuantity -= orderProduct.Quantity;
+                orderProduct.TotalAmount = orderProduct.Quantity * product.Price;
+                orderDetail.FinalAmount += orderProduct.TotalAmount;
+                orderProduct.OrderDetailId = orderDetailId;
+
+                _dbContext.OrderProducts.Add(orderProduct);
+                addedOrderProducts.Add(orderProduct);
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return addedOrderProducts;
         }
+
     }
 }

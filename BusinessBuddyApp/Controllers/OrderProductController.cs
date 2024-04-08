@@ -43,9 +43,9 @@ namespace BusinessBuddyApp.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] OrderProduct product, [FromRoute] int orderDetailId)
+        public async Task<ActionResult> Create([FromBody] List<OrderProduct> products, [FromRoute] int orderDetailId)
         {
-            await _orderProductService.Create(product, orderDetailId);
+            await _orderProductService.Create(products, orderDetailId);
             return Ok();
         }
 

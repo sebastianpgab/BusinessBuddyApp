@@ -16,9 +16,6 @@ namespace BusinessBuddyApp
             CreateMap<OrderDto, Order>();
             CreateMap<OrderDetailDto, OrderDetail>();
             CreateMap<OrderProductDto, OrderProduct>();
-
-
-
         }
     }
 }

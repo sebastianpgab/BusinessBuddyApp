@@ -8,6 +8,6 @@ namespace BusinessBuddyApp.Models
         public AddressDto AddressDto { get; set; }
         public OrderDto OrderDto { get; set; }
         public OrderDetailDto OrderDetailDto { get; set; }  
-        public OrderProductDto OrderProductDto { get; set; }
+        public List<OrderProductDto> OrderProductDto { get; set; }
     }
 }
